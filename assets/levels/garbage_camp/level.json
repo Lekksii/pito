@@ -1,0 +1,141 @@
+{
+  "weather_color": [10, 10, 10],
+  "rotation_range": [-90,25],
+  "light": [
+    {
+      "type": "point",
+      "position": [1.27, 1.36, -2.5],
+      "rotation": [0, 0, 0],
+      "distance": 0.01,
+      "shadows": false,
+      "color": [238, 157, 49]
+    },
+    {
+      "id": "npc_shadow_fill",
+      "position": [5.92, 2.76, -4.9],
+      "rotation": [0, 0, 0],
+      "color": [61, 40, 12]
+    },
+    {
+      "id": "interior_shadow_fill",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "color": [38, 25, 8]
+    },
+    {
+      "id": "exterior_shadow_fill",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "color": [17, 11, 3]
+    }
+  ],
+  "level_data": [
+    {
+      "model": "assets/models/sky_1",
+      "texture": "texsky3.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 8
+    },
+    {
+      "le_name": "Spawn Point",
+      "id": "spawn_point",
+      "model": "sphere",
+      "position": [2.2, 1.8, -6.4],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "color": [238, 157, 49, 128]
+    },
+    {
+      "le_name": "Fire Anim",
+      "id": "animation",
+      "model": "quad",
+      "sequence": "fire",
+      "position": [0.87, 1.38, -1.77],
+      "rotation": [-0.1, -16.0, 0],
+      "collider": null,
+      "scale": 0.8
+    },
+    {
+      "model": "assets/levels/garbage_camp/exterior",
+      "texture": "texobj2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "ambient": "exterior_shadow_fill",
+      "shader": true,
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/garbage_camp/interior",
+      "texture": "texobj1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "ambient": "interior_shadow_fill",
+      "shader": true,
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/garbage_camp/weapons",
+      "texture": "texobj2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "ambient": "npc_shadow_fill",
+      "shader": true,
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+     {
+      "model": "assets/levels/garbage_camp/uaz",
+      "texture": "texobj1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+       "ambient": "exterior_shadow_fill",
+       "shader": true,
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/garbage_camp/trader_npc",
+      "texture": "pstalker.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "ambient": "npc_shadow_fill",
+      "shader": true,
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/garbage_camp/harya_npc",
+      "texture": "pstalker.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "shader": true,
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/garbage_camp/krot_npc",
+      "texture": "pstalker.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "shader": true,
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/garbage_camp/batka_npc",
+      "texture": "psoldier.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "ambient": "npc_shadow_fill",
+      "shader": true,
+      "collider": null,
+      "scale": 1
+    }
+  ]
+}

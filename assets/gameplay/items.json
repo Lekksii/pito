@@ -1,0 +1,201 @@
+{
+  "medkit": {
+    "name": "itm.medkit.name",
+    "caption": "itm.medkit.caption",
+    "icon": "assets/ui/items/medkit.png",
+    "price": 100,
+    "type": "usable",
+    "on_use": {"heal": 25.0}
+  },
+  "medkit_army": {
+    "name": "itm.army.medkit.name",
+    "caption": "itm.army.medkit.caption",
+    "icon": "assets/ui/items/medkit_army.png",
+    "price": 200,
+    "type": "usable",
+    "on_use": {"heal": 50.0}
+  },
+  "antirad": {
+    "name": "itm.antirad.name",
+    "caption": "itm.antirad.caption",
+    "icon": "assets/ui/items/antirad.png",
+    "price": 250,
+    "type": "usable",
+    "on_use": {"radiation": true}
+  },
+  "af_sparkle": {
+    "name": "itm.af.sparkle.name",
+    "caption": "itm.af.sparkle.caption",
+    "icon": "assets/ui/items/art_sparkle.png",
+    "price": 300,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 15.0}
+  },
+  "af_bengal": {
+    "name": "itm.af.bengal.name",
+    "caption": "itm.af.bengal.caption",
+    "icon": "assets/ui/items/af_bengal.png",
+    "price": 400,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 50.0}
+  },
+  "af_fireball": {
+    "name": "itm.af.fireball.name",
+    "caption": "itm.af.fireball.caption",
+    "icon": "assets/ui/items/af_fireball.png",
+    "price": 350,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 30.0}
+  },
+  "af_crystal": {
+    "name": "itm.af.crystal.name",
+    "caption": "itm.af.crystal.caption",
+    "icon": "assets/ui/items/af_crystal.png",
+    "price": 500,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 10.0}
+  },
+  "af_dummy": {
+    "name": "itm.af.dummy.name",
+    "caption": "itm.af.dummy.caption",
+    "icon": "assets/ui/items/af_dummy.png",
+    "price": 450,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 20.0}
+  },
+  "af_medusa": {
+    "name": "itm.af.medusa.name",
+    "caption": "itm.af.medusa.caption",
+    "icon": "assets/ui/items/af_medusa.png",
+    "price": 375,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 5.0}
+  },
+  "af_battery": {
+    "name": "itm.af.battery.name",
+    "caption": "itm.af.battery.caption",
+    "icon": "assets/ui/items/af_battery.png",
+    "price": 650,
+    "slot": "belt",
+    "type": "equipment",
+    "on_use": {"max_hp": 25.0}
+  },
+  "stalker_outfit": {
+    "name": "itm.stalker.outfit.name",
+    "caption": "itm.stalker.outfit.caption",
+    "icon": "assets/ui/items/stalker_armor.png",
+    "price": 1000,
+    "slot": "outfit",
+    "type": "equipment",
+    "on_use": {"armor": 15.0}
+  },
+    "jacket": {
+    "name": "itm.jacket.name",
+    "caption": "itm.jacket.caption",
+    "icon": "assets/ui/items/jacket.png",
+    "price": 200,
+    "slot": "outfit",
+    "type": "equipment",
+    "on_use": {"armor": 5.0}
+  },
+  "jacket_bandit": {
+    "name": "itm.jacket.bandit.name",
+    "caption": "itm.jacket.bandit.caption",
+    "icon": "assets/ui/items/jacket_bandit.png",
+    "price": 400,
+    "slot": "outfit",
+    "type": "equipment",
+    "on_use": {"armor": 10.0}
+  },
+  "ecolog_suit": {
+    "name": "itm.ecolog.suit.name",
+    "caption": "itm.ecolog.suit.caption",
+    "icon": "assets/ui/items/ecolog_outfit.png",
+    "price": 2500,
+    "slot": "outfit",
+    "type": "equipment",
+    "on_use": {"armor": 25.0}
+  },
+    "military_armor": {
+    "name": "itm.army.outfit.name",
+    "caption": "itm.army.outfit.caption",
+    "icon": "assets/ui/items/military_armor.png",
+    "price": 3000,
+    "slot": "outfit",
+    "type": "equipment",
+    "on_use": {"armor": 35.0}
+  },
+  "antigas_armor": {
+    "name": "itm.antigas.outfit.name",
+    "caption": "itm.antigas.outfit.caption",
+    "icon": "assets/ui/items/antigas_jacket.png",
+    "price": 850,
+    "slot": "outfit",
+    "type": "equipment",
+    "on_use": {"armor": 20.0}
+  },
+  "w_ak": {
+    "name": "itm.ak.name",
+    "caption": "itm.ak.caption",
+    "icon": "assets/ui/items/w_ak.png",
+    "price": 1500,
+    "slot": "rifle",
+    "type": "weapon",
+    "profile": "w_ak"
+  },
+  "w_pistol": {
+    "name": "itm.pistol.name",
+    "caption": "itm.pistol.caption",
+    "icon": "assets/ui/items/w_pistol.png",
+    "price": 0,
+    "slot": "pistol",
+    "attach": true,
+    "type": "weapon",
+    "profile": "w_pistol"
+  },
+    "w_lr": {
+    "name": "itm.lr.name",
+    "caption": "itm.lr.caption",
+    "icon": "assets/ui/items/w_lr.png",
+    "price": 2000,
+    "slot": "rifle",
+    "type": "weapon",
+    "profile": "w_lr"
+  },
+    "w_groza": {
+    "name": "itm.groza.name",
+    "caption": "itm.groza.caption",
+    "icon": "assets/ui/items/w_groza.png",
+    "price": 2500,
+    "slot": "rifle",
+    "type": "weapon",
+    "profile": "w_groza"
+  },
+    "ammo_ak": {
+    "name": "itm.ammo.ak.name",
+    "caption": "itm.ammo.ak.caption",
+    "icon": "assets/ui/items/ammo_ak.png",
+    "price": 60,
+    "type": "item"
+  },
+  "ammo_lr": {
+    "name": "itm.ammo.lr.name",
+    "caption": "itm.ammo.lr.caption",
+    "icon": "assets/ui/items/ammo_lr.png",
+    "price": 120,
+    "type": "item"
+  },
+  "ammo_oc": {
+    "name": "itm.ammo.oc.name",
+    "caption": "itm.ammo.oc.caption",
+    "icon": "assets/ui/items/ammo_oc.png",
+    "price": 200,
+    "type": "item"
+  }
+}

@@ -1,0 +1,25 @@
+{
+    "autodetect": true,
+    "aspect": [
+        14.4,
+        9
+    ],
+    "camera_fov": 75,
+    "current_language": "ru",
+    "dev": false,
+    "first_launch": false,
+    "languages": {
+        "en": {
+            "name": "lang.en"
+        },
+        "ru": {
+            "name": "lang.ru"
+        }
+    },
+    "mouse_sensitivity": 18,
+    "show_fps": true,
+    "window_size": [
+        720,
+        480
+    ]
+}

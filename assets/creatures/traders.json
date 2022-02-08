@@ -1,0 +1,32 @@
+{
+  "village_trader": {
+    "dont_want_to_buy": [
+      "w_pistol"
+    ],
+    "items": [
+      "medkit",
+      "antirad",
+      "ammo_ak",
+      "w_ak",
+      "jacket",
+      "jacket_bandit"
+    ]
+  },
+  "garbage_trader": {
+    "dont_want_to_buy": [
+      "w_pistol"
+    ],
+    "items": [
+      "medkit",
+      "medkit_army",
+      "antirad",
+      "ammo_ak",
+      "w_ak",
+      "jacket",
+      "jacket_bandit",
+      "antigas_armor",
+      "w_groza",
+      "ammo_oc"
+    ]
+  }
+}

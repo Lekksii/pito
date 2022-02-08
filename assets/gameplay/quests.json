@@ -1,0 +1,64 @@
+[
+  {
+    "id": "quest_find_cap",
+    "title": "quest.0.name",
+    "description": "quest.0.name",
+    "quest_items": [],
+    "reward": {}
+  },
+  {
+    "id": "quest_find_camp",
+    "title": "quest.camp.name",
+    "description": "quest.camp.name",
+    "pda": {
+      "spot": "area_neutral.png",
+      "position": [0.06,-0.22],
+      "level_id": "village_e3"
+    },
+    "quest_items": [],
+    "reward": {}
+  },
+  {
+    "id": "quest_rusty_1",
+    "title": "quest.rusty.1.name",
+    "description": "quest.rusty.1.name",
+    "pda": {
+      "spot": "area_enemy.png",
+      "position": [0.06,-0.22],
+      "level_id": "village_e3"
+    },
+    "quest_items": ["af_sparkle"],
+    "reward": {
+      "money": 300
+    }
+  },
+  {
+    "id": "quest_galosh",
+    "title": "quest.galosh.0.name",
+    "description": "quest.galosh.0.name",
+    "quest_items": [],
+    "pda": {
+      "spot": "area_enemy.png",
+      "position": [0.11,-0.23],
+      "level_id": "bandits_camp"
+    },
+    "reward": {
+      "money": 150,
+      "items": ["af_medusa"]
+    }
+  },
+  {
+  "id": "quest_rusty_0",
+    "title": "quest.rusty.0.name",
+    "description": "quest.rusty.0.caption",
+    "pda": {
+      "spot": "area_enemy.png",
+      "position": [0.11,-0.17],
+      "level_id": "village"
+    },
+    "quest_items": [],
+    "reward": {
+      "money": 150
+    }
+  }
+]

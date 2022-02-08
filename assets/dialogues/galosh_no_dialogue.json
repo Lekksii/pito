@@ -1,0 +1,14 @@
+{
+  "start_dialogue": "start",
+  "dialogues": {
+    "start": {
+      "text": "dlg.galosh.no.dialogue.0.text",
+      "answers": [
+        {
+          "text": "dlg.many.times.answer.3",
+          "go_to": "close_dialog"
+        }
+      ]
+    }
+  }
+}

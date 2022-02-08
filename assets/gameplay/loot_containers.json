@@ -1,0 +1,16 @@
+{
+  "level_0_0_corpse_0": {
+    "name": "box.0_0.corpse.name",
+    "caption": "box.0_0.corpse.name",
+    "items": ["medkit"]
+  },
+  "test_loot": {
+    "name": "treasure",
+    "caption": "treasure",
+    "items": ["medkit","medkit_army","antirad",
+    "jacket", "jacket_bandit","stalker_outfit",
+      "antigas_armor","ecolog_suit","military_armor",
+    "af_sparkle","af_bengal", "af_fireball","af_crystal","af_dummy","af_medusa","af_battery",
+    "ammo_ak","ammo_ak","ammo_lr","ammo_lr","ammo_oc","ammo_oc","w_lr","w_ak","w_groza"]
+  }
+}

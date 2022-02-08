@@ -1,0 +1,89 @@
+{
+  "rusty_profile":{
+    "name": "npc.rusty.name",
+    "trader_profile": null,
+    "dialogues": [
+      {
+        "dont_has_event_key": "rusty.first.dialogue.done",
+        "dialogue": "rusty_dialogue_0"
+      },
+      {
+        "has_event_key": "rusty.first.dialogue.done.not.correct",
+        "dialogue": "rusty_dialogue_0_again"
+      },
+      {
+        "has_event_key": "rusty.second.dialogue.start",
+        "dont_has_event_key": "rusty.second.dialogue.done",
+        "dialogue": "rusty_dialogue_1"
+      },
+      {
+        "has_event_key": "rusty.quest.bandits.not.complete",
+        "dialogue": "rusty_no_dialogue_quest_bandits"
+      },
+      {
+        "has_event_key": "rusty.no.dialogue",
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "galosh_profile":{
+    "name": "npc.galosh.name",
+    "trader_profile": null,
+    "dialogues": [
+      {
+        "has_event_key": "galosh.no.dialogue",
+        "dialogue": "galosh_no_dialogue"
+      },
+      {
+        "dont_has_event_key": "galosh.dialogue.done",
+        "dialogue": "galosh_dialogue"
+      }
+    ]
+  },
+  "botan_profile":{
+    "name": "npc.botan.name",
+    "trader_profile": null,
+    "dialogues": [
+      {
+        "dont_has_event_key": "botanik.dialogue.done",
+        "dialogue": "botanik_dialogue"
+      },
+      {
+        "has_event_key": "botanik.no.dialogue",
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "zabor_profile":{
+    "name": "npc.zabor.name",
+    "trader_profile": null,
+    "dialogues": [
+      {
+        "dont_has_event_key": "zabor.dialogue.done",
+        "dialogue": "zabor_dialogue"
+      },
+      {
+        "has_event_key": "zabor.no.dialogue",
+        "dialogue": "zabor_no_dialogue"
+      }
+    ]
+  },
+  "village_trader_profile":{
+    "name": "npc.village.trader.name",
+    "trader_profile": "village_trader",
+    "dialogues": [
+      {
+        "dialogue": "test_many_answers"
+      }
+    ]
+  },
+  "ai_test_stalker":{
+    "name": "npc.village.trader.name",
+    "trader_profile": "garbage_trader",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  }
+}

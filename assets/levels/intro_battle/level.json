@@ -1,0 +1,65 @@
+{
+  "weather_color": [74, 116, 159],
+  "level_data": [
+    {
+      "model": "assets/models/sky_1",
+      "texture": "texsky1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 8
+    },
+    {
+      "id": "spawn_point",
+      "model": "sphere",
+      "position": [0, 2, -16],
+      "rotation": [0, -8, 0],
+      "collider": null,
+      "scale": 1,
+      "color": [238, 157, 49, 128]
+    },
+    {
+      "model": "assets/levels/intro/terrain_intro",
+      "texture": "objects/terrain_type2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro_battle/intro_battle_rocks",
+      "texture": "texobj2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro/l_0_0_forest",
+      "texture": "texforest1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+     {
+      "model": "assets/levels/intro_battle/intro_battle_tree",
+      "texture": "texobj1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "id": "transition_to_level",
+      "level": "village",
+      "model": "cube",
+      "position": [1.5, 2.1, 25.5],
+      "rotation": [0, 0, 0],
+      "collider": "box",
+      "scale": 4,
+      "color": [10, 10, 10, 128]
+    }
+  ]
+}

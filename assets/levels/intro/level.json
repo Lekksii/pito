@@ -1,0 +1,236 @@
+{
+  "weather_color": [74, 116, 159],
+  "level_data": [
+    {
+      "model": "assets/levels/intro/l_0_0_skybox",
+      "texture": "texsky1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "id": "spawn_point",
+      "model": "sphere",
+      "position": [-6, 2, -8],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "color": [238, 157, 49, 128]
+    },
+    {
+      "id": "loot_money",
+      "value": 75,
+      "model": "cube",
+      "position": [-6, 0, 0],
+      "rotation": [0, 0, 0],
+      "collider": "box",
+      "scale": 1,
+      "color": [10, 10, 10, 128]
+    },
+  {
+      "id": "loot_money",
+      "value": 125,
+      "model": "cube",
+      "position": [-2.7, 0, -2],
+      "rotation": [0, 0, 0],
+      "collider": "box",
+      "scale": 1,
+      "color": [10, 10, 10, 128]
+    },
+  {
+      "id": "loot",
+      "loot_id": "level_0_0_corpse_0",
+      "model": "cube",
+      "position": [0.8, 0, -3],
+      "rotation": [0, 0, 0],
+      "collider": "box",
+      "scale": 1,
+      "color": [10, 10, 10, 128]
+    },
+    {
+      "id": "loot_money",
+      "value": 50,
+      "model": "cube",
+      "position": [-0.47, 0, 1],
+      "rotation": [0, 0, 0],
+      "collider": "box",
+      "scale": 1,
+      "color": [10, 10, 10, 128]
+    },
+    {
+      "id": "transition_to_level",
+      "level": "intro_battle",
+      "model": "cube",
+      "position": [0, 2.04, 16],
+      "rotation": [0, 0, 0],
+      "collider": "box",
+      "scale": 4,
+      "color": [10, 10, 10, 128]
+    },
+    {
+      "model": "assets/levels/intro/terrain_intro",
+      "texture": "objects/terrain_type2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro/l_0_0_rocks",
+      "texture": "texobj2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro/l_0_0_forest",
+      "texture": "texforest1.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro/l_0_0_dead_stalkers",
+      "texture": "pstalker.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro/l_0_0_dead_bandit",
+      "texture": "pbandit.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/levels/intro/l_0_0_dead_stalkers_weapons",
+      "texture": "texobj2.png",
+      "position": [0, 0, 0],
+      "rotation": [0, 180, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [-6, 0, 8],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [5, 0, 17],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [1, 0, 32],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree3.png",
+      "position": [19, 0, 25],
+      "rotation": [0, 45, 0],
+      "collider": null,
+      "scale": 3,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_4sided",
+      "texture": "textree1.png",
+      "position": [12, 0, -3],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree3.png",
+      "position": [25, 0, 1],
+      "rotation": [0, 90, 0],
+      "collider": null,
+      "scale": 3,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree3.png",
+      "position": [30, 0, -17],
+      "rotation": [0, 90, 0],
+      "collider": null,
+      "scale": 3,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [14, 0, 32],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [4, 0, -46],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [-21, 0, -6],
+      "rotation": [0, 90, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [-8, 0, -19],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree1.png",
+      "position": [-7, 0, -39],
+      "rotation": [0, 0, 0],
+      "collider": null,
+      "scale": 1,
+      "double_sided": true
+    },
+    {
+      "model": "assets/models/tree_faced",
+      "texture": "textree3.png",
+      "position": [14, 0, -43],
+      "rotation": [0, -28, 0],
+      "collider": null,
+      "scale": 3,
+      "double_sided": true
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "barrel_1":{
+    "texture": "textures/texobj1.png"
+  },
+  "barrel_2":{
+    "texture": "textures/texobj1.png"
+  },
+  "barrel_3":{
+    "texture": "textures/texobj1.png"
+  },
+  "concrete_block":{
+    "texture": "textures/texobj1.png"
+  },
+  "concrete_fence":{
+    "texture": "textures/texobj1.png"
+  },
+  "concrete_slabs":{
+    "texture": "textures/texobj1.png"
+  },
+  "concrete_tube":{
+    "texture": "textures/texobj1.png"
+  },
+  "door_1":{
+    "texture": "textures/texobj1.png"
+  },
+  "door_2":{
+    "texture": "textures/texobj1.png"
+  },
+  "door_stud_1":{
+    "texture": "textures/texobj1.png"
+  },
+  "door_stud_2":{
+    "texture": "textures/texobj1.png"
+  },
+  "forest_1":{
+    "texture": "textures/texforest1.png"
+  },
+  "fps_ak74":{
+    "texture": "textures/texobj2.png"
+  },
+  "fps_hands":{
+    "texture": "textures/pstalker.png"
+  },
+  "fps_lr_300":{
+    "texture": "textures/texobj2.png"
+  },
+  "fps_oc_groza":{
+    "texture": "textures/texobj2.png"
+  },
+  "garbage":{
+    "texture": "textures/texobj2.png"
+  },
+  "grass_plot_1":{
+    "texture": "textures/texobj2.png"
+  },
+  "grass_plot_2":{
+    "texture": "textures/texobj2.png"
+  },
+  "industry_build_1":{
+    "texture": "textures/texobj2.png"
+  },
+  "industry_build_1_door":{
+    "texture": "textures/texobj1.png"
+  },
+  "industry_build_1_windows":{
+    "texture": "textures/texobj2.png"
+  },
+  "industry_tube":{
+    "texture": "textures/texobj2.png"
+  },
+  "lamp_1":{
+    "texture": "textures/texobj2.png"
+  },
+  "lamp_2":{
+    "texture": "textures/texobj1.png"
+  },
+  "lamp_3":{
+    "texture": "textures/texobj1.png"
+  },
+  "metal_case":{
+    "texture": "textures/texobj1.png"
+  },
+  "metal_gate":{
+    "texture": "textures/texobj1.png"
+  },
+  "metal_vent":{
+    "texture": "textures/texobj1.png"
+  },
+  "old_tree":{
+    "texture": "textures/texobj1.png"
+  },
+  "rad":{
+    "texture": "textures/texobj2.png"
+  },
+  "sky_1":{
+    "texture": "textures/texsky1.png"
+  },
+  "sky_2":{
+    "texture": "textures/texsky2.png"
+  },
+  "sky_3":{
+    "texture": "textures/texsky3.png"
+  },
+  "stone_1":{
+    "texture": "textures/texobj2.png"
+  },
+  "stone_2":{
+    "texture": "textures/texobj2.png"
+  },
+  "tree_4sided":{
+    "texture": "textures/textree1.png"
+  },
+  "tree_faced":{
+    "texture": "textures/textree1.png"
+  },
+  "uaz":{
+    "texture": "textures/texobj1.png"
+  },
+  "underground_section_end":{
+    "texture": "textures/texobj2.png"
+  },
+  "underground_section_forward":{
+    "texture": "textures/texobj2.png"
+  },
+  "underground_section_turned":{
+    "texture": "textures/texobj2.png"
+  },
+  "village_house":{
+    "texture": "textures/texobj2.png"
+  },
+  "wall_blind_door":{
+    "texture": "textures/texobj2.png"
+  },
+  "window":{
+    "texture": "textures/texobj1.png"
+  },
+  "window_sill":{
+    "texture": "textures/texobj1.png"
+  },
+  "wood_box":{
+    "texture": "textures/texobj1.png"
+  },
+  "wood_box_green":{
+    "texture": "textures/texobj1.png"
+  },
+  "wood_fence":{
+    "texture": "textures/texobj1.png"
+  },
+  "wood_panel":{
+    "texture": "textures/texobj1.png"
+  },
+  "wood_reel":{
+    "texture": "textures/texobj1.png"
+  },
+  "wood_table":{
+    "texture": "textures/texobj1.png"
+  }
+}

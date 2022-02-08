@@ -1,0 +1,47 @@
+{
+  "w_pistol": {
+    "clip_ammo_max": 12,
+    "damage": 5.0,
+    "fire_sound": "pistol_shot",
+    "hud": "assets/ui/fort_hud.png",
+    "sparkle_position": [0.53,-0.18],
+    "ammo_type": null,
+    "inf_ammo": true,
+    "speed": 0.3,
+    "shoot_count": 1
+  },
+  "w_ak": {
+    "clip_ammo_max": 30,
+    "damage": 15.0,
+    "fire_sound": "ak_shot",
+    "hud": "assets/ui/ak74_hud.png",
+    "sparkle_position": [0.55,-0.18],
+    "ammo_type": "ammo_ak",
+    "speed": 0.22,
+    "shoot_count": 3
+  },
+  "w_lr": {
+    "clip_ammo_max": 30,
+    "damage": 20.0,
+    "fire_sound": "lr_shot",
+    "hud": "assets/ui/l85_hud.png",
+    "scope": {
+      "sprite": "assets/ui/scope.png",
+      "fov": 15
+    },
+    "sparkle_position": [0.53,-0.22],
+    "ammo_type": "ammo_lr",
+    "speed": 0.18,
+    "shoot_count": 3
+  },
+  "w_groza": {
+    "clip_ammo_max": 21,
+    "damage": 25.0,
+    "fire_sound": "groza_shot",
+    "hud": "assets/ui/oc_groza_hud.png",
+    "sparkle_position": [0.53,-0.24],
+    "ammo_type": "ammo_oc",
+    "speed": 0.15,
+    "shoot_count": 3
+  }
+}

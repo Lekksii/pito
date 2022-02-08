@@ -1,0 +1,23 @@
+{
+  "start_dialogue": "DIALOGUE ID",
+  "dialogues": {
+    "DIALOGUE ID": {
+      "text": "TEXT IN NPC WINDOW",
+      "answers": [
+        {
+          "text": "PLAYER ANSWER 1, MAXIMUM 3!!!",
+          "go_to": "NEXT DIALOGUE ID, OR SPECIAL KEYS (close_dialog - close dialogue window, close_game - quit from game)",
+          "actions": {
+            "add_money": 0,
+            "del_money": 0,
+            "add_e_key": ["event.key.id - you can create any id, just remember it and use"],
+            "del_e_key": ["event.key.id"],
+            "add_quest": ["quest_id"],
+            "add_item": ["item_id"],
+            "del_item": ["item_id"]
+          }
+        }
+      ]
+    }
+  }
+}

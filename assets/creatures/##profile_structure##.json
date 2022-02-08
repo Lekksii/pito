@@ -1,0 +1,13 @@
+{
+  "PROFILE_ID":{
+    "name": "name.key.of.your.npc - value for key write in assets/texts/lang_{your lang}",
+    "trader_profile": null,
+    "dialogues": [
+      {
+        "has_event_key": "event.key.id - if player has this key, dialogue will run, else - not!",
+        "dont_has_event_key": "event.key.id - if player don't has this key, dialogue will run, else - not!",
+        "dialogue": "dialogue_id from assets/dialogues/{dialogue_id}.json"
+      }
+    ]
+  }
+}

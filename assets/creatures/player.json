@@ -1,0 +1,9 @@
+{
+  "start_money": 100,
+  "start_max_hp": 100.0,
+  "start_items": ["w_pistol","w_ak","jacket","medkit"],
+  "use_items_after_start": ["w_pistol","w_ak","jacket"],
+  "start_quests": ["quest_find_cap"],
+  "start_event_keys": [],
+  "start_level": "village_e3"
+}
