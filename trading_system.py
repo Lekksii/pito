@@ -308,21 +308,21 @@ class TradeWindow(Entity):
                         self.update_items()
                         game.get_player().weapon.update_ammo_rifle()
                 else:
-                    if inv_item_id not in traders[self.trader_id]["dont_want_to_buy"] or \
-                            game.get_player().inventory.rifle_slot_has_item and \
-                            inv_item_id != game.get_player().inventory.rifle_slot_item.item_id or \
-                            game.get_player().inventory.pistol_slot_has_item and \
-                            inv_item_id != game.get_player().inventory.pistol_slot_item.item_id or \
-                            game.get_player().inventory.outfit_slot_has_item and \
-                            inv_item_id != game.get_player().inventory.outfit_slot_item.item_id or \
-                            game.get_player().inventory.belt_slots[0]["has_item"] and\
-                            inv_item_id != game.get_player().inventory.belt_slots[0]["item"].item_id or \
-                            game.get_player().inventory.belt_slots[1]["has_item"] and \
-                            inv_item_id != game.get_player().inventory.belt_slots[1]["item"].item_id or \
-                            game.get_player().inventory.belt_slots[2]["has_item"] and \
-                            inv_item_id != game.get_player().inventory.belt_slots[2]["item"].item_id or \
-                            game.get_player().inventory.belt_slots[3]["has_item"] and \
-                            inv_item_id != game.get_player().inventory.belt_slots[3]["item"].item_id:
+                    if (not inv_item_id in traders[self.trader_id]["dont_want_to_buy"]) or \
+                            (game.get_player().inventory.rifle_slot_has_item and \
+                            inv_item_id is not game.get_player().inventory.rifle_slot_item.item_id) or \
+                            (game.get_player().inventory.pistol_slot_has_item and \
+                            inv_item_id is not game.get_player().inventory.pistol_slot_item.item_id) or \
+                            (game.get_player().inventory.outfit_slot_has_item and \
+                            inv_item_id is not game.get_player().inventory.outfit_slot_item.item_id) or \
+                            (game.get_player().inventory.belt_slots[0]["has_item"] and\
+                            inv_item_id is not game.get_player().inventory.belt_slots[0]["item"].item_id) or \
+                            (game.get_player().inventory.belt_slots[1]["has_item"] and \
+                            inv_item_id is not game.get_player().inventory.belt_slots[1]["item"].item_id) or \
+                            (game.get_player().inventory.belt_slots[2]["has_item"] and \
+                            inv_item_id is not game.get_player().inventory.belt_slots[2]["item"].item_id) or \
+                            (game.get_player().inventory.belt_slots[3]["has_item"] and \
+                            inv_item_id is not game.get_player().inventory.belt_slots[3]["item"].item_id):
                         self.buy = False
                         if self.items_in_inventory[self.selector_id].item_count > 0:
                             game.get_player().inventory.delete_item_count(self.items_in_inventory[self.selector_id].item_id)

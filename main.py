@@ -10,25 +10,16 @@ from language_system import language
 import my_json
 import os.path
 import bug_trap
-import glob
 
 root = Tk()
 
 options = None
 
-
-# Проверка файлов на существование, если их нет - крашим игру!
-def check_files(fname):
-    if not os.path.isfile(fname + ".json"):
-        if bug_trap.no_file_found(fname + ".json"):
-            application.quit()
-
-
 # Список проверяемых файлов
 def check_assets_folder():
-    check_files("assets/gameplay/items")
-    check_files("assets/gameplay/quests")
-    check_files("assets/creatures/player")
+    bug_trap.check_file("assets/gameplay/items")
+    bug_trap.check_file("assets/gameplay/quests")
+    bug_trap.check_file("assets/creatures/player")
 
 
 if __name__ == "__main__":
@@ -83,9 +74,9 @@ if __name__ == "__main__":
     application.development_mode = False
 
     # НАЧИНАЕМ ИГРУ С ГЛАВНОГО МЕНЮ
-    scene = main_menu.MainMenu()
+    #scene = main_menu.MainMenu()
 
-    #scene = Gameplay()
+    scene = Gameplay()
 
     #scene = LevelEditor("ai_test")
 

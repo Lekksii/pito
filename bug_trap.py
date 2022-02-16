@@ -1,10 +1,26 @@
 from ursina import *
 import ctypes
 import datetime
+import tkinter.messagebox
 
 # Сообщение с причиной краша игры
-def crash_game_msg(title, text, style):
-    return ctypes.windll.user32.MessageBoxW(0, text, title, style)
+def crash_game_msg(title, text, style = 1):
+    if (os.name == "posix"):
+        return tkinter.messagebox.showerror(title,text)
+    else:
+        return ctypes.windll.user32.MessageBoxW(0, text, title, style)
+
+# Проверка файлов на существование, если их нет - крашим игру!
+def check_file(fname):
+    if not os.path.isfile(fname + ".json"):
+        if no_file_found(fname + ".json"):
+            application.quit()
+
+# Проверка директорий на существование, если их нет - крашим игру!
+def check_folder(fname):
+    if not os.path.isfile(fname):
+        if no_file_found(fname):
+            application.quit()
 
 # Шаблон вывода окна ошибки с последующим созданием лога в каталоге с игрой
 def no_file_found(file_name):

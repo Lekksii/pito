@@ -61,6 +61,14 @@ class MainMenu(Entity):
         msg.ignored_input_entity = self
         self.ignore_input = True
 
+    def ChangeScreen(self, screen):
+        camera.overlay.color = color.black
+        loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
+        destroy(loading, delay=1)
+        invoke(screen, delay=1)
+        destroy(self)
+        invoke(setattr, camera.overlay, 'color', color.clear, delay=1)
+
     def input(self, key):
         global menu_buttons_counter
         if self.main_menu.enabled:
@@ -87,12 +95,7 @@ class MainMenu(Entity):
             if key == "enter":
                 # Новая игра
                 if menu_buttons_counter == 0:
-                    camera.overlay.color = color.black
-                    loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
-                    destroy(loading, delay=1)
-                    invoke(gm.Gameplay,delay=1)
-                    destroy(self)
-                    invoke(setattr, camera.overlay, 'color', color.clear, delay=1)
+                    self.ChangeScreen(gm.Gameplay)
                 # Опции
                 if menu_buttons_counter == 1:
                     self.main_menu.enabled = False

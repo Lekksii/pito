@@ -155,8 +155,8 @@ class Player(Entity):
         camera.clip_plane_far = 500
         # мышь зафиксирована или нет
         mouse.locked = setting.cursor_lock
-        #self.filters = CommonFilters(camera.display_region.get_window(),application.base.cam)
-        #self.filters.setInverted()
+        #self.filters = CommonFilters(application.base.win,application.base.cam)
+        #self.filters.setAmbientOcclusion()
         #camera.shader = oblivion_postprocessing
         #camera.set_shader_input("c_R", 0.93)
         #camera.set_shader_input("c_G", 0.95)
@@ -544,45 +544,37 @@ class Player(Entity):
                             self.crosshair_tip_text = ""
 
                         if self.ray_hit.entity.id == "npc":
+                            # Если есть ключ с диалогом и НПС не торговец
                             if npc_profiles[self.ray_hit.entity.keys["profile"]]["dialogues"] and npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"] is None:
+                                # Функция начала диалога
+                                def startDialog():
+                                    self.dialogue.start_dialogue(d["dialogue"])
+                                    self.dialogue.dialogue_file = d["dialogue"]
+                                    self.dialogue.npc_name.text = TKey(
+                                    npc_profiles[self.ray_hit.entity.keys["profile"]]["name"]).upper()
+                                    self.crosshair_tip_text = ""
+                                    self.press_f.disable()
+
                                 for d in npc_profiles[self.ray_hit.entity.keys["profile"]]["dialogues"]:
+                                    # Если dont_has_event_key ключ существует, а has_event_key не существует
                                     if "dont_has_event_key" in d and "has_event_key" not in d:
                                         if not has_e_key(d["dont_has_event_key"]):
-                                            self.dialogue.start_dialogue(d["dialogue"])
-                                            self.dialogue.dialogue_file = d["dialogue"]
-                                            self.dialogue.npc_name.text = TKey(
-                                                npc_profiles[self.ray_hit.entity.keys["profile"]]["name"]).upper()
-                                            self.crosshair_tip_text = ""
-                                            self.press_f.disable()
-
+                                            startDialog()
+                                    # Если has_event_key существует и dont_has_event_key существует
                                     if "has_event_key" in d and "dont_has_event_key" in d:
                                         if has_e_key(d["has_event_key"]) and not has_e_key(d["dont_has_event_key"]):
-                                            self.dialogue.start_dialogue(d["dialogue"])
-                                            self.dialogue.dialogue_file = d["dialogue"]
-                                            self.dialogue.npc_name.text = TKey(
-                                                npc_profiles[self.ray_hit.entity.keys["profile"]]["name"]).upper()
-                                            self.crosshair_tip_text = ""
-                                            self.press_f.disable()
-
+                                            startDialog()
+                                    # Если has_event_key существует, а dont_has_event_key не сущесвтует
                                     if "has_event_key" in d and "dont_has_event_key" not in d:
                                         if has_e_key(d["has_event_key"]):
-                                            self.dialogue.start_dialogue(d["dialogue"])
-                                            self.dialogue.dialogue_file = d["dialogue"]
-                                            self.dialogue.npc_name.text = TKey(
-                                                npc_profiles[self.ray_hit.entity.keys["profile"]]["name"]).upper()
-                                            self.crosshair_tip_text = ""
-                                            self.press_f.disable()
-
-
+                                            startDialog()
+                                    # Если has_event_key не существует и dont_has_event_key тоже
                                     if "has_event_key" not in d and "dont_has_event_key" not in d:
-                                        self.dialogue.start_dialogue(d["dialogue"])
-                                        self.dialogue.dialogue_file = d["dialogue"]
-                                        self.dialogue.npc_name.text = TKey(
-                                            npc_profiles[self.ray_hit.entity.keys["profile"]]["name"]).upper()
-                                        self.crosshair_tip_text = ""
-                                        self.press_f.disable()
+                                        startDialog()
                                         break
+                            # Если НПС имеет профиль торговца
                             if npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"] is not None:
+                                # Если нет файла профиля - крашим игру
                                 if npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"] not in \
                                     my_json.read("assets/creatures/traders"):
                                         if bug_trap.crash_game_msg("Error", "Trader [{0}] ID not found in \"assets/creatures/traders.json\"!", 1):
@@ -929,7 +921,7 @@ class GamePause(Entity):
         Text(TKey("pause.title").upper(), parent=self, y=0.30, x=0, origin=(0, 0))
         self.tip_bottom = Text(
             dedent(TKey("pause.control.tip")).strip(),
-            parent=self, y=-0.40, x=-0.7, origin=(-.5, 0), color=color.dark_gray, size=4)
+            parent=self, y=-0.40, x=-0.7,z=-0.001, origin=(-.5, 0), color=color.dark_gray, size=4)
 
         if self.menu_punkts:
             offset = 0.25
@@ -946,6 +938,7 @@ class GamePause(Entity):
                     p.origin = (-.5, 0)
                     height += len(p.lines) / 100 * 7
                     p.y -= height
+                    p.z = -0.01
 
             self.selector = Sprite(ui_folder + "rad_icn.png", parent=self, y=self.menu_punkts[0].y, x=-.085,z=-0.003, scale=.21,
                                    origin=(-.5, 0))

@@ -1,0 +1,5 @@
+BUG TRAP crash engine ver. 0.1
+Time: February 16, 02 2022 23:24:45
+
+Crash reason is:
+>>> FILE: assets/creatures/player is not found!

@@ -112,7 +112,7 @@ class WeaponSystem():
 
     # >> Берём оружие в руки
     def draw_weapon(self,slot):
-        # >> Прицел становистя перекрестьем
+        # >> Прицел становится перекрестьем
         #print("[WeaponSystem] Update cursor to cross!")
         game.get_player().cursor.texture = "assets/ui/crosshair_weapon.png"
         # >> Если слот пистолета и он надет в слоте в инвентаре
