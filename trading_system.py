@@ -68,19 +68,21 @@ class TradeWindow(Entity):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    # Обновляем список преметов в слотах
     def fill_slots_with_items(self,trader_id):
+        # Если в слотах на продажу есть что-то - удаляем
         if self.items_in_inventory:
             for i in self.items_in_inventory:
                 destroy(i)
             self.items_in_inventory.clear()
 
-
+        # Если слоты покупок пустые – заполняем товарами продавца
         if not self.items_in_trader:
             for trader_item in traders[trader_id]["items"]:
                 self.items_in_trader.append(TradingItem(trader_item,texture=items_db[trader_item]["icon"],
                                                         parent=self.items_container_trader))
 
-
+        # Если слоты на продажу пустые – заполняем товарами из инвентаря
         if not self.items_in_inventory:
             if game.get_player().inventory.items_in_inventory:
                 for player_item in game.get_player().inventory.items_in_inventory:
@@ -88,11 +90,10 @@ class TradeWindow(Entity):
                                                             parent=self.items_container_player,
                                                             item_count=player_item.item_count))
         self.selector_id = self.selector_id
-        #self.update_cursor()
         self.update_items()
 
     def update_items(self):
-        # Temp list of last items
+        # Буфер для последних предметов в инв
         last_items_player = []
         last_items_trader = []
         last_items_player.clear()
@@ -147,51 +148,67 @@ class TradeWindow(Entity):
 
             self.items_in_trader.append(itm_t)
 
-        #self.buy = True
-        #self.selector_id = 0
         self.update_cursor()
-        #self.update_selected_text()
 
+    # Обновляем курсор и тексты
     def update_cursor(self):
         self.money.text = "{0}$".format(game.get_player().money)
+        sel = self.selector
+
         if self.buy and self.items_in_trader:
+            trader_items = self.items_in_trader[self.selector_id]
+
             self.type_caption.text = TKey("trade.buy.state")
-            self.selector.parent = self.items_container_trader
-            self.selector.y = self.items_in_trader[self.selector_id].y
-            self.selector.x = self.items_in_trader[self.selector_id].x
+            sel.parent = self.items_container_trader
+            sel.y = trader_items.y
+            sel.x = trader_items.x
 
-            self.selector.scale_y = self.items_in_trader[self.selector_id].scale_y
-            self.selector.scale_x = self.items_in_trader[self.selector_id].scale_x
-            if items_db[self.items_in_trader[self.selector_id].item_id]["price"] > game.get_player().money:
-                self.selector.color = color_red_alpha
+            sel.scale_y = trader_items.scale_y
+            sel.scale_x = trader_items.scale_x
+
+            if items_db[trader_items.item_id]["price"] > game.get_player().money:
+                sel.color = color_red_alpha
             else:
-                self.selector.color = color_orange_alpha
+                sel.color = color_orange_alpha
+
         if not self.buy and self.items_in_inventory:
+            inv_items = self.items_in_inventory[self.selector_id]
+
             self.type_caption.text = TKey("trade.sell.state")
-            self.selector.parent = self.items_container_player
+            sel.parent = self.items_container_player
+
             if self.selector_id >= 0:
-                self.selector.y = self.items_in_inventory[self.selector_id].y
-                self.selector.x = self.items_in_inventory[self.selector_id].x
+                sel.y = inv_items.y
+                sel.x = inv_items.x
             else:
-                self.selector.y = -5
-                self.selector.x = -5
+                sel.y = -5
+                sel.x = -5
 
-            self.selector.scale_y = self.items_in_inventory[self.selector_id].scale_y
-            self.selector.scale_x = self.items_in_inventory[self.selector_id].scale_x
+            sel.scale_y = inv_items.scale_y
+            sel.scale_x = inv_items.scale_x
 
-            if self.items_in_inventory[self.selector_id].item_id in traders[self.trader_id]["dont_want_to_buy"] or \
-                    game.get_player().inventory.rifle_slot_has_item and \
-                    game.get_player().inventory.rifle_slot_item.item_id == self.items_in_inventory[self.selector_id].item_id or \
-                    game.get_player().inventory.outfit_slot_has_item and \
-                    game.get_player().inventory.outfit_slot_item.item_id == self.items_in_inventory[self.selector_id].item_id or \
-                    game.get_player().inventory.belt_slots[0]["has_item"] and \
-                    game.get_player().inventory.belt_slots[0]["item"].item_id == self.items_in_inventory[self.selector_id].item_id or \
-                    game.get_player().inventory.belt_slots[1]["has_item"] and \
-                    game.get_player().inventory.belt_slots[1]["item"].item_id == self.items_in_inventory[self.selector_id].item_id or \
-                    game.get_player().inventory.belt_slots[2]["has_item"] and \
-                    game.get_player().inventory.belt_slots[2]["item"].item_id == self.items_in_inventory[self.selector_id].item_id or \
-                    game.get_player().inventory.belt_slots[3]["has_item"] and \
-                    game.get_player().inventory.belt_slots[3]["item"].item_id == self.items_in_inventory[self.selector_id].item_id:
+            def checkItems():
+                rifle_slot_has = game.get_player().inventory.rifle_slot_has_item
+                rifle_slot = game.get_player().inventory.rifle_slot_item
+                outfit_slot_has = game.get_player().inventory.outfit_slot_has_item
+                outfit_slot = game.get_player().inventory.outfit_slot_item
+                blacklist = traders[self.trader_id]["dont_want_to_buy"]
+                belt_slot = game.get_player().inventory.belt_slots
+
+                def belt():
+                    for i in belt_slot:
+                        if belt_slot[i]["has_item"] and belt_slot[i]["item"].item_id == inv_items.item_id:
+                            return True
+
+                if (inv_items.item_id in blacklist) or \
+                (rifle_slot_has and rifle_slot.item_id == inv_items.item_id) or \
+                (outfit_slot_has and outfit_slot.item_id == inv_items.item_id) or \
+                belt():
+                    return True
+                else:
+                    return False
+
+            if checkItems():
                 self.selector.color = color_red_alpha
             else:
                 self.selector.color = color_orange_alpha
@@ -200,7 +217,12 @@ class TradeWindow(Entity):
     def input(self,key):
 
         def selectItem():
-            return self.items_in_inventory[self.selector_id].item_id if not self.buy else None
+            return self.items_in_inventory[self.selector_id].item_id if not self.buy else \
+                self.items_in_trader[self.selector_id].item_id
+
+        def updateCursorItems():
+            self.update_items()
+            self.update_cursor()
 
         if self.enabled:
             if key == "escape":
@@ -219,13 +241,11 @@ class TradeWindow(Entity):
                     self.selector.scale_x = self.items_in_trader[self.selector_id].scale_x
                     if self.selector.x == self.items_in_trader[0].x and self.items_offset_t != 0:
                         self.items_offset_t = 0
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
 
                     if self.selector.x >= 0.35 - self.items_in_trader[self.selector_id].scale_x:
                         self.items_offset_t += self.items_in_trader[self.selector_id].scale_x
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
                     self.update_cursor()
                 else:
                     if self.selector_id > len(self.items_in_inventory) - 1:
@@ -235,13 +255,11 @@ class TradeWindow(Entity):
                     self.selector.scale_x = self.items_in_inventory[self.selector_id].scale_x
                     if self.selector.x == self.items_in_inventory[0].x and self.items_offset_p != 0:
                         self.items_offset_p = 0
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
 
                     if self.selector.x >= 0.35 - self.items_in_inventory[self.selector_id].scale_x:
                         self.items_offset_p += self.items_in_inventory[self.selector_id].scale_x
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
                     self.update_cursor()
                 print("Стрелка вправо, текущий предмет "+selectItem())
 
@@ -257,17 +275,14 @@ class TradeWindow(Entity):
                     self.selector.scale_x = self.items_in_trader[self.selector_id].scale_x
                     if self.selector.x == self.items_in_trader[len(self.items_in_trader) - 1].x:
                         self.items_offset_t = self.items_in_trader[len(self.items_in_trader) - 1].x - 0.31
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
 
                     if self.selector.x <= -0.35 and self.selector.x != self.items_in_trader[0].x:
                         self.items_offset_t -= self.items_in_trader[self.selector_id].scale_x
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
                     else:
                         self.items_offset_t = 0
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
                     self.update_cursor()
                 else:
                     if self.selector_id < 0:
@@ -277,19 +292,15 @@ class TradeWindow(Entity):
                     self.selector.scale_x = self.items_in_inventory[self.selector_id].scale_x
                     if self.selector.x == self.items_in_inventory[len(self.items_in_inventory) - 1].x:
                         self.items_offset_p = self.items_in_inventory[len(self.items_in_inventory) - 1].x - 0.31
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
 
                     if self.selector.x <= -0.35 and self.selector.x != self.items_in_inventory[0].x:
                         self.items_offset_p -= self.items_in_inventory[self.selector_id].scale_x
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
                     else:
                         self.items_offset_p = 0
-                        self.update_items()
-                        self.update_cursor()
+                        updateCursorItems()
                     self.update_cursor()
-                print("Стрелка влево, текущий предмет " + selectItem())
 
             if key == "up arrow" or key == "w":
                 self.buy = True
@@ -300,11 +311,8 @@ class TradeWindow(Entity):
                 self.buy = False
                 self.selector_id = 0
                 self.update_cursor()
-                print("Стрелка вниз, текущий предмет " + selectItem())
 
             if key == "enter":
-
-                print("Нажали на Enter на предмете - "+selectItem())
                 if self.buy:
                     if game.get_player().money >= items_db[self.items_in_trader[self.selector_id].item_id]["price"]:
                         self.buy = True
@@ -336,7 +344,6 @@ class TradeWindow(Entity):
                             for i in b_slots:
                                 if b_slots[i]["has_item"] and b_slots[i]["item"].item_id != selectItem() or \
                                         not b_slots[i]["has_item"]:
-                                    print("Предмет "+selectItem()+" не находится на поясе!")
                                     return True
 
                         if (selectItem() not in blacklist) and \
@@ -344,23 +351,27 @@ class TradeWindow(Entity):
                         (pistol_slot_has and p_slot.item_id != selectItem() or not pistol_slot_has) and \
                         (outfit_has and o_slot.item_id != selectItem() or not outfit_has) and \
                         (checkBelt() is True):
-                            print("Предмет "+selectItem()+" не в blacklist, его нет ни в одном из слотов, можно продавать!")
                             return True
                         else:
-                            print("Предмет " + selectItem() + " был обнаружен либо в blacklist, либо он надет, нельзя продать!")
                             return False
-
+                    # Если всё впорядке и предмет можно продавать
                     if chekItem() is True:
+                        # Сбрасываем селектор в положение "Продать"
                         self.buy = False
+                        # Если кол-во предмета больше 1
+                        # то просто отнимаем 1 при продаже
                         if self.items_in_inventory[self.selector_id].item_count > 0:
                             game.get_player().inventory.delete_item_count(self.items_in_inventory[self.selector_id].item_id)
                         else:
+                            # Если всего 1 предмет, просто удаляем его из инвентаря
                             game.get_player().inventory.delete_item(self.items_in_inventory[self.selector_id].item_id)
+
                         if self.selector_id > 0:
                             self.selector_id -= 1
                             self.update_cursor()
                         else:
                             self.selector_id = 0
+                        # Прибавляем деньги по стоимости предмета
                         game.get_player().money += items_db[self.items_in_inventory[self.selector_id].item_id]["price"]
                         self.fill_slots_with_items(self.trader_id)
 
@@ -369,65 +380,63 @@ class TradeWindow(Entity):
         if self.items_in_trader if self.buy else self.items_in_inventory:
             selected_item = self.items_in_trader[self.selector_id] if self.buy else \
                             self.items_in_inventory[self.selector_id]
+            db_items = items_db[selected_item.item_id]
+            stat_type = TKey("inv.itm.stat.type")
+            stat_price = TKey("inv.itm.stat.price")
+            stat_heal = TKey("inv.itm.stat.heal")
+            stat_count = TKey("inv.itm.stat.count")
+            stat_rad = TKey("inv.itm.stat.radiation")
+            stat_max_hp = TKey("inv.itm.stat.max.hp")
+            stat_armor = TKey("inv.itm.stat.armor")
+
             if self.selected_icon:
                 invoke(destroy, self.selected_icon, delay=0.00001)
 
-            self.selected_name.text = dedent("{0}".format(TKey(items_db[selected_item.item_id]["name"]))).strip()
-            self.selected_caption.text = dedent(
-                "<rgb(102, 98, 95)>\"{0}\"".format(TKey(items_db[selected_item.item_id]["caption"]))).strip()
-            self.selected_caption.wordwrap = 35
+            def changeName(key):
+                self.selected_name.text = dedent("{0}".format(key)).strip()
+
+            def changeDescription(key, wordwrap=35):
+                self.selected_caption.text = dedent(
+                    "<rgb(102, 98, 95)>\"{0}\"".format(key)).strip()
+                self.selected_caption.wordwrap = wordwrap
+
+            def setStats(stat,value):
+                pattern = ""
+
+                for i in range(len(stat)):
+                    pattern += "<rgb(238, 157, 49)>"+str(stat[i])+":<rgb(102, 98, 95)> "+str(value[i])+"\n"
+
+                self.selection_stats.text = dedent(pattern).strip()
+
+            changeName(TKey(db_items["name"]))
+            changeDescription(TKey(db_items["caption"]))
+
             if len(self.items_in_trader if self.buy else self.items_in_inventory) >= 1:
-                if items_db[selected_item.item_id]["type"] == "usable":
-                    self.selection_stats.text = dedent(
-                        "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}".format(
-                            TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                            TKey("inv.itm.stat.price"), items_db[selected_item.item_id]["price"])).strip()
-                    if "heal" in items_db[selected_item.item_id]["on_use"]:
-                        self.selection_stats.text = dedent(
-                            "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}\n<rgb(238, 157, 49)>{4}: <rgb(102, 98, 95)>{5}\n<rgb(238, 157, 49)>{6}: <rgb(102, 98, 95)>{7}".format(
-                                TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                                TKey("inv.itm.stat.price"),
-                                items_db[selected_item.item_id]["price"], TKey("inv.itm.stat.heal"),
-                                items_db[selected_item.item_id]["on_use"]["heal"], TKey("inv.itm.stat.count"),
-                                selected_item.item_count if not self.buy else "1")).strip()
-                    if "radiation" in items_db[selected_item.item_id]["on_use"]:
-                        self.selection_stats.text = dedent(
-                            "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}\n<rgb(238, 157, 49)>{4}: <rgb(102, 98, 95)>{5}\n<rgb(238, 157, 49)>{6}: <rgb(102, 98, 95)>{7}".format(
-                                TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                                TKey("inv.itm.stat.price"),
-                                items_db[selected_item.item_id]["price"], TKey("inv.itm.stat.radiation"),
-                                "20.0 s", TKey("inv.itm.stat.count"),
-                                selected_item.item_count if not self.buy else "1")).strip()
-                elif items_db[selected_item.item_id]["type"] == "equipment":
-                    self.selection_stats.text = dedent(
-                        "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}\n<rgb(238, 157, 49)>{4}: <rgb(102, 98, 95)>{5}".format(
-                            TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                            TKey("inv.itm.stat.price"),
-                            items_db[selected_item.item_id]["price"], TKey("inv.itm.stat.count"),
-                            selected_item.item_count if not self.buy else "1")).strip()
-                    if "max_hp" in items_db[selected_item.item_id]["on_use"]:
-                        self.selection_stats.text = dedent(
-                            "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}\n<rgb(238, 157, 49)>{4}: <rgb(102, 98, 95)>{5}\n<rgb(238, 157, 49)>{6}: <rgb(102, 98, 95)>{7}".format(
-                                TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                                TKey("inv.itm.stat.price"),
-                                items_db[selected_item.item_id]["price"], TKey("inv.itm.stat.max.hp"),
-                                items_db[selected_item.item_id]["on_use"]["max_hp"], TKey("inv.itm.stat.count"),
-                                selected_item.item_count if not self.buy else "1")).strip()
-                    if "armor" in items_db[selected_item.item_id]["on_use"]:
-                        self.selection_stats.text = dedent(
-                            "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}\n<rgb(238, 157, 49)>{4}: <rgb(102, 98, 95)>{5}\n<rgb(238, 157, 49)>{6}: <rgb(102, 98, 95)>{7}".format(
-                                TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                                TKey("inv.itm.stat.price"),
-                                items_db[selected_item.item_id]["price"], TKey("inv.itm.stat.armor"),
-                                items_db[selected_item.item_id]["on_use"]["armor"], TKey("inv.itm.stat.count"),
-                                selected_item.item_count if not self.buy else "1")).strip()
+                if db_items["type"] == "usable":
+                    setStats([stat_type, stat_price],[db_items["type"], db_items["price"]])
+                    if "heal" in db_items["on_use"]:
+                        setStats([stat_type, stat_price, stat_heal,stat_count],
+                                 [TKey(db_items["type"]), db_items["price"],
+                                  db_items["on_use"]["heal"],selected_item.item_count if not self.buy else "1"])
+                    if "radiation" in db_items["on_use"]:
+                        setStats([stat_type, stat_price, stat_rad,stat_count],
+                                 [TKey(db_items["type"]), db_items["price"],"20.0 s",
+                                  selected_item.item_count if not self.buy else "1"])
+                elif db_items["type"] == "equipment":
+                    setStats([stat_type, stat_price,stat_count],[TKey(db_items["type"]),db_items["price"],
+                                                                 selected_item.item_count if not self.buy else "1"])
+                    if "max_hp" in db_items["on_use"]:
+                        if "heal" in db_items["on_use"]:
+                            setStats([stat_type, stat_price, stat_max_hp, stat_count],
+                                     [TKey(db_items["type"]), db_items["price"],
+                                      db_items["on_use"]["max_hp"], selected_item.item_count if not self.buy else "1"])
+                    if "armor" in db_items["on_use"]:
+                        setStats([stat_type, stat_price, stat_armor, stat_count],
+                                 [TKey(db_items["type"]), db_items["price"],
+                                  db_items["on_use"]["armor"], selected_item.item_count if not self.buy else "1"])
                 else:
-                    self.selection_stats.text = dedent(
-                        "<rgb(238, 157, 49)>{0}:<rgb(102, 98, 95)> {1}\n<rgb(238, 157, 49)>{2}: <rgb(102, 98, 95)>{3}\n<rgb(238, 157, 49)>{4}: <rgb(102, 98, 95)>{5}".format(
-                            TKey("inv.itm.stat.type"), TKey(items_db[selected_item.item_id]["type"]),
-                            TKey("inv.itm.stat.price"),
-                            items_db[selected_item.item_id]["price"], TKey("inv.itm.stat.count"),
-                            selected_item.item_count if not self.buy else "1")).strip()
+                    setStats([stat_type, stat_price, stat_count], [TKey(db_items["type"]), db_items["price"],
+                                                                   selected_item.item_count if not self.buy else "1"])
             else:
                 self.selection_stats.text = ""
 
