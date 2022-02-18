@@ -583,6 +583,7 @@ class Player(Entity):
                                     self.trading.enable()
                                     self.trading.trader_id = npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"]
                                     self.trading.buy = True
+                                    self.trading.selector_id = 0
                                     self.trading.fill_slots_with_items(npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"])
                                     self.press_f.disable()
                                     self.crosshair_tip_text = ""
