@@ -259,7 +259,7 @@ class Inventory(Entity):
 
     def delete_item(self, item_id):
         for item in self.items_in_inventory:
-            if item_id == item.item_id:
+            if item_id == item.item_id and not item.equipped:
                 self.items_in_inventory.remove(item)
                 destroy(item)
                 break
@@ -271,7 +271,7 @@ class Inventory(Entity):
 
     def delete_item_count(self,item_id,count=1):
         for item in self.items_in_inventory:
-            if item_id == item.item_id:
+            if item_id == item.item_id and not item.equipped:
                 item.item_count -= count
                 if item.item_count < 1:
                     self.items_in_inventory.remove(item)
@@ -375,16 +375,10 @@ class Inventory(Entity):
                                     selected_item_root.equipped = True
                                     self.move_to_slot(selected_item_root, selected_item["slot"])
                                     game.get_player().weapon.pistol = Weapon(selected_item_root.item_id,
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]],
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]][
-                                                                                "clip_ammo_max"],
-                                                                            selected_item["slot"],
-                                                                             my_json.read("assets/gameplay/weapons")[
-                                                                                 selected_item["profile"]][
-                                                                                 "speed"]
-                                                                             )
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]],
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["clip_ammo_max"],
+                                    selected_item["slot"],
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["speed"])
                                     game.get_player().weapon.draw_weapon("pistol")
                                 else:
                                     self.pistol_slot_item.equipped = False
@@ -397,32 +391,20 @@ class Inventory(Entity):
                                     # >> Устанавливаем иконку в слоте на иконку предмета
                                     self.move_to_slot(selected_item_root, selected_item["slot"])
                                     game.get_player().weapon.pistol = Weapon(selected_item_root.item_id,
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]],
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]][
-                                                                                "clip_ammo_max"],
-                                                                            selected_item["slot"],
-                                                                             my_json.read("assets/gameplay/weapons")[
-                                                                                 selected_item["profile"]][
-                                                                                 "speed"]
-                                                                             )
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]],
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["clip_ammo_max"],
+                                    selected_item["slot"],
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["speed"])
                                     game.get_player().weapon.draw_weapon("pistol")
                             if selected_item["slot"] == "rifle":
                                 if not self.rifle_slot_has_item:
                                     selected_item_root.equipped = True
                                     self.move_to_slot(selected_item_root, selected_item["slot"])
                                     game.get_player().weapon.rifle = Weapon(selected_item_root.item_id,
-                                                                             my_json.read("assets/gameplay/weapons")[
-                                                                                 selected_item["profile"]],
-                                                                             my_json.read("assets/gameplay/weapons")[
-                                                                                 selected_item["profile"]][
-                                                                                 "clip_ammo_max"],
-                                                                            selected_item["slot"],
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]][
-                                                                                "speed"]
-                                                                            )
+                                     my_json.read("assets/gameplay/weapons")[selected_item["profile"]],
+                                     my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["clip_ammo_max"],
+                                     selected_item["slot"],
+                                     my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["speed"])
                                     game.get_player().weapon.draw_weapon("rifle")
                                 else:
                                     game.get_player().weapon.delete_weapon("rifle")
@@ -436,16 +418,10 @@ class Inventory(Entity):
                                     # >> Устанавливаем иконку в слоте на иконку предмета
                                     self.move_to_slot(selected_item_root, selected_item["slot"])
                                     game.get_player().weapon.rifle = Weapon(selected_item_root.item_id,
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]],
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]][
-                                                                                "clip_ammo_max"],
-                                                                            selected_item["slot"],
-                                                                            my_json.read("assets/gameplay/weapons")[
-                                                                                selected_item["profile"]][
-                                                                                "speed"]
-                                                                            )
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]],
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["clip_ammo_max"],
+                                    selected_item["slot"],
+                                    my_json.read("assets/gameplay/weapons")[selected_item["profile"]]["speed"])
                                     game.get_player().weapon.draw_weapon("rifle")
                         else:
                             if selected_item["slot"] == "pistol":
