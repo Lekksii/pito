@@ -88,7 +88,7 @@ class TradeWindow(Entity):
                 for player_item in game.get_player().inventory.items_in_inventory:
                     self.items_in_inventory.append(PlayerItem(player_item.item_id,texture=player_item.texture,
                                                             parent=self.items_container_player,
-                                                            item_count=player_item.item_count))
+                                                            item_count=player_item.item_count,equipped=player_item.equipped))
         self.selector_id = self.selector_id
         self.update_items()
 
@@ -124,7 +124,7 @@ class TradeWindow(Entity):
         # spawn items again (COPY ALL DATA FROM OLD TO NEW)
         for item_p in last_items_player:
             itm_p = PlayerItem(item_p.item_id,texture=item_p.texture,parent=item_p.parent, item_count=item_p.item_count,
-                               origin=(-.5, 0))
+                               equipped=item_p.equipped, origin=(-.5, 0))
             itm_p.scale_y = 0.03  # Scale Y
             itm_p.scale_x = itm_p.scale_y * (itm_p.texture.width / itm_p.texture.height) / 2  # Scale X
 
@@ -188,25 +188,11 @@ class TradeWindow(Entity):
             sel.scale_x = inv_items.scale_x
 
             def checkItems():
-                rifle_slot_has = game.get_player().inventory.rifle_slot_has_item
-                rifle_slot = game.get_player().inventory.rifle_slot_item
-                outfit_slot_has = game.get_player().inventory.outfit_slot_has_item
-                outfit_slot = game.get_player().inventory.outfit_slot_item
+                # Предметы запрещённые для продажи
                 blacklist = traders[self.trader_id]["dont_want_to_buy"]
-                belt_slot = game.get_player().inventory.belt_slots
 
-                def belt():
-                    for i in belt_slot:
-                        if belt_slot[i]["has_item"] and belt_slot[i]["item"].item_id == inv_items.item_id:
-                            return True
-
-                if (inv_items.item_id in blacklist) or \
-                (rifle_slot_has and rifle_slot.item_id == inv_items.item_id) or \
-                (outfit_slot_has and outfit_slot.item_id == inv_items.item_id) or \
-                belt():
+                if (inv_items.item_id in blacklist) or inv_items.equipped:
                     return True
-                else:
-                    return False
 
             if checkItems():
                 self.selector.color = color_red_alpha
@@ -220,12 +206,17 @@ class TradeWindow(Entity):
             return self.items_in_inventory[self.selector_id].item_id if not self.buy else \
                 self.items_in_trader[self.selector_id].item_id
 
+        def selectItemStatus():
+            return self.items_in_inventory[self.selector_id].equipped if not self.buy else \
+                self.items_in_trader[self.selector_id].item_id
+
         def updateCursorItems():
             self.update_items()
             self.update_cursor()
 
         if self.enabled:
             if key == "escape":
+                self.selector_id = 0
                 self.enabled = False
                 game.get_player().weapon.update_ammo_rifle()
 
@@ -261,7 +252,7 @@ class TradeWindow(Entity):
                         self.items_offset_p += self.items_in_inventory[self.selector_id].scale_x
                         updateCursorItems()
                     self.update_cursor()
-                print("Стрелка вправо, текущий предмет "+selectItem())
+                print("Стрелка вправо, текущий предмет "+selectItem() + " статус "+str(selectItemStatus()))
 
             # >> Управление курсором влево
             if key == "left arrow" or key == "a" or key == "a hold" or key == "left arrow hold":
@@ -324,43 +315,20 @@ class TradeWindow(Entity):
                         game.get_player().weapon.update_ammo_rifle()
                 else:
                     def chekItem():
-                        # Занят ли автоматный слот
-                        rifle_slot_has = game.get_player().inventory.rifle_slot_has_item
-                        # Итем в автоматном слоте
-                        r_slot = game.get_player().inventory.rifle_slot_item
-                        # Занят ли пистолетный слот
-                        pistol_slot_has = game.get_player().inventory.pistol_slot_has_item
-                        # Итем в пистолетном слоте
-                        p_slot = game.get_player().inventory.pistol_slot_item
-                        # Занят ли слот костюма
-                        outfit_has = game.get_player().inventory.outfit_slot_has_item
-                        # Итем в слоте костюма
-                        o_slot = game.get_player().inventory.outfit_slot_item
                         # Список предметов у торговца, которые он не покупает
                         blacklist = traders[self.trader_id]["dont_want_to_buy"]
-                        b_slots = game.get_player().inventory.belt_slots
 
-                        def checkBelt():
-                            for i in b_slots:
-                                if b_slots[i]["has_item"] and b_slots[i]["item"].item_id != selectItem() or \
-                                        not b_slots[i]["has_item"]:
-                                    return True
-
-                        if (selectItem() not in blacklist) and \
-                        (rifle_slot_has and r_slot.item_id != selectItem() or not rifle_slot_has) and \
-                        (pistol_slot_has and p_slot.item_id != selectItem() or not pistol_slot_has) and \
-                        (outfit_has and o_slot.item_id != selectItem() or not outfit_has) and \
-                        (checkBelt() is True):
+                        # Если предмет продажи не в чс и не экипирован – возвращаем true
+                        if selectItem() not in blacklist and not selectItemStatus():
                             return True
-                        else:
-                            return False
-                    # Если всё впорядке и предмет можно продавать
-                    if chekItem() is True:
+
+                    # Если всё заебумба – продаём предмет
+                    if chekItem():
                         # Сбрасываем селектор в положение "Продать"
                         self.buy = False
                         # Если кол-во предмета больше 1
                         # то просто отнимаем 1 при продаже
-                        if self.items_in_inventory[self.selector_id].item_count > 0:
+                        if self.items_in_inventory[self.selector_id].item_count > 1:
                             game.get_player().inventory.delete_item_count(self.items_in_inventory[self.selector_id].item_id)
                         else:
                             # Если всего 1 предмет, просто удаляем его из инвентаря
@@ -458,11 +426,12 @@ class TradingItem(Sprite):
             setattr(self, key, value)
 
 class PlayerItem(Sprite):
-    def __init__(self,item_id="",item_count=1, **kwargs):
+    def __init__(self,item_id="",item_count=1,equipped=False, **kwargs):
         super().__init__()
 
         self.item_id = item_id
         self.item_count = item_count
+        self.equipped = equipped
 
         for key, value in kwargs.items():
             setattr(self, key, value)
