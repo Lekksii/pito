@@ -21,6 +21,7 @@ import my_json
 import bug_trap
 import main_menu
 import ui
+from actor import *
 
 # ИНИЦИАЛИЗАЦИЯ
 # объявлям папки с ассетами и доп файлы
@@ -28,8 +29,6 @@ tex_folder = "assets/textures/"
 mesh_folder = "assets/models/"
 ui_folder = "assets/ui/"
 sound_folder = "assets/sounds/"
-
-
 
 player_creature = my_json.read("assets/creatures/player")
 options_file = my_json.read("assets/options")
@@ -761,6 +760,9 @@ class Gameplay():
         self.current_level = Level(self.player, level_id=player_creature["start_level"])
         # игровой процесс запущен
         gameplay = True
+
+        stalker = PitoActor("anim/pito_npc",tex_folder+"pbandit.png",idle_anim="idle_cross")
+
         # цикл для проверки аргументов и изменение переменных
         for key, value in kwargs.items():
             setattr(self, key, value)

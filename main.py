@@ -14,6 +14,7 @@ import bug_trap
 root = Tk()
 
 options = None
+actor_texture = None
 
 # Список проверяемых файлов
 def check_assets_folder():
