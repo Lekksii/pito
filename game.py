@@ -251,7 +251,7 @@ class Player(Entity):
         #                            position=(-0.1,window.bottom.y+0.05,-0.001),scale=0.3,
         #                            parent=camera.ui,origin=(-.5,0))
 
-        self.press_f = ui.UIText("Press [F]", parent=camera.ui,offset=(0.0018,0.0018), y=-0.35, enabled=False,
+        self.press_f = ui.UIText(TKey("press")+" [F]", parent=camera.ui,offset=(0.0018,0.0018), y=-0.35, enabled=False,
                                  color=color.white,origin=(0,0))
 
         self.fps_counter = ui.UIText("fps", (0.0018, 0.0018), color=color_orange,
@@ -477,14 +477,18 @@ class Player(Entity):
 
             # если луч столкнулся с объектом
             if self.ray_hit.hit:
+
+                def getHitData():
+                    return self.ray_hit.entity
+
                 # если объект имеет энтити и его id не пустой
-                if self.ray_hit.entity and self.ray_hit.entity.id is not None:
+                if getHitData() and getHitData().id is not None:
                     # при нажатии кнопки взаимодействия
                     if key == "f" and game_session:
                         # получаем ключи объекта уровня
-                        lvl_keys = self.ray_hit.entity.keys
+                        lvl_keys = getHitData().keys
                         # если айди объекта "переход" то перемещаем игрока
-                        if self.ray_hit.entity.id == "transition":
+                        if getHitData().id == "transition":
                             self.steps_sound.play()
                             # делаем экран чёрным
                             camera.overlay.color = color.black
@@ -499,17 +503,17 @@ class Player(Entity):
                                 get_player().position = (lvl_keys["target_position"])
                             else:
                                 # иначе перемещаем непосредственно на позицию триггера перехода
-                                get_player().position = (self.ray_hit.entity.x, get_player().y, self.ray_hit.entity.z)
+                                get_player().position = (getHitData().x, get_player().y, getHitData().z)
                             # через секунду убрать чёрный экран
                             invoke(setattr, camera.overlay, 'color', color.clear, delay=1)
                             # удалить текст с загрузкой
                             destroy(loading, delay=1)
                             destroy(loading_icon, delay=1)
                         # если айди объекта "переход на уровень" то меняем уровень
-                        if self.ray_hit.entity.id == "transition_to_level":
+                        if getHitData().id == "transition_to_level":
                             at_marker_position = False
-                            get_player().position = lerp(get_player().position, self.ray_hit.entity.position, 1)
-                            if distance(get_player().position, self.ray_hit.entity.position) < 1:
+                            get_player().position = lerp(get_player().position, getHitData().position, 1)
+                            if distance(get_player().position, getHitData().position) < 1:
                                 at_marker_position = True
                             if at_marker_position:
                                 self.steps_sound.play()
@@ -523,7 +527,7 @@ class Player(Entity):
                                 # удаляем текущий уровень
                                 destroy(get_current_level())
                                 # загружаем новый по айди из ключа "уровень"
-                                set_current_level(self.ray_hit.entity.keys["level"])
+                                set_current_level(getHitData().keys["level"])
                                 self.crosshair_tip_text = ""
                                 # убрать чёрный экран
                                 invoke(setattr, camera.overlay, 'color', color.clear, delay=2)
@@ -531,26 +535,26 @@ class Player(Entity):
                                 destroy(loading, delay=2)
                                 destroy(loading_icon, delay=2)
                         # если айди объекта "обыскать деньги" то
-                        if self.ray_hit.entity.id == "loot_money":
+                        if getHitData().id == "loot_money":
                             # создаём текст с получаемой суммой
-                            loot = ui.UIText("$" + str(self.ray_hit.entity.keys["value"]), origin=(-.5, 0),
+                            loot = ui.UIText("$" + str(getHitData().keys["value"]), origin=(-.5, 0),
                                              position=(window.left.x + .03, 0), scale=1.1, color=color_orange)
                             # прибавляем деньги
-                            get_player().money += self.ray_hit.entity.keys["value"]
+                            get_player().money += getHitData().keys["value"]
                             # удаляем невидимый триггер объект
-                            destroy(self.ray_hit.entity)
+                            destroy(getHitData())
                             # удаляем надпись
                             destroy(loot, delay=1)
                             self.crosshair_tip_text = ""
 
-                        if self.ray_hit.entity.id == "loot":
-                            self.loot.start_loot(self.ray_hit.entity.keys["loot_id"])
-                            destroy(self.ray_hit.entity)
+                        if getHitData().id == "loot":
+                            self.loot.start_loot(getHitData().keys["loot_id"])
+                            destroy(getHitData())
                             self.crosshair_tip_text = ""
 
-                        if self.ray_hit.entity.id == "npc":
+                        if getHitData().id == "npc":
                             # Если есть ключ с диалогом и НПС не торговец
-                            if npc_profiles[self.ray_hit.entity.keys["profile"]]["dialogues"] and npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"] is None:
+                            if npc_profiles[getHitData().keys["profile"]]["dialogues"] and npc_profiles[getHitData().keys["profile"]]["trader_profile"] is None:
                                 # Функция начала диалога
                                 def startDialog():
                                     self.dialogue.start_dialogue(d["dialogue"])
@@ -560,7 +564,7 @@ class Player(Entity):
                                     self.crosshair_tip_text = ""
                                     self.press_f.disable()
 
-                                for d in npc_profiles[self.ray_hit.entity.keys["profile"]]["dialogues"]:
+                                for d in npc_profiles[getHitData().keys["profile"]]["dialogues"]:
                                     # Если dont_has_event_key ключ существует, а has_event_key не существует
                                     if "dont_has_event_key" in d and "has_event_key" not in d:
                                         if not has_e_key(d["dont_has_event_key"]):
@@ -578,18 +582,18 @@ class Player(Entity):
                                         startDialog()
                                         break
                             # Если НПС имеет профиль торговца
-                            if npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"] is not None:
+                            if npc_profiles[getHitData().keys["profile"]]["trader_profile"] is not None:
                                 # Если нет файла профиля - крашим игру
-                                if npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"] not in \
+                                if npc_profiles[getHitData().keys["profile"]]["trader_profile"] not in \
                                     my_json.read("assets/creatures/traders"):
                                         if bug_trap.crash_game_msg("Error", "Trader [{0}] ID not found in \"assets/creatures/traders.json\"!", 1):
                                             application.quit()
                                 else:
                                     self.trading.enable()
-                                    self.trading.trader_id = npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"]
+                                    self.trading.trader_id = npc_profiles[getHitData().keys["profile"]]["trader_profile"]
                                     self.trading.buy = True
                                     self.trading.selector_id = 0
-                                    self.trading.fill_slots_with_items(npc_profiles[self.ray_hit.entity.keys["profile"]]["trader_profile"])
+                                    self.trading.fill_slots_with_items(npc_profiles[getHitData().keys["profile"]]["trader_profile"])
                                     self.press_f.disable()
                                     self.crosshair_tip_text = ""
                         # запускаем луч, что бы убрать все надписи под прицелом
@@ -632,12 +636,24 @@ class Player(Entity):
                                        debug=setting.show_raycast_debug)
                 # self.hit_pos_info.text = self.raycast_point_pos_text
 
+            def setCrosshairTip(text):
+                self.crosshair_tip_text = TKey(text)
+                self.press_f.enabled = True
+
+            def clearCrosshairText():
+                self.crosshair_tip_text = ""
+                self.press_f.enabled = False
+
+            def getHitData():
+                if self.ray_hit.hit:
+                    return self.ray_hit.entity
+
                 # РЭЙКАСТИНГ, ВЗАИМОДЕЙСТВИЕ С МИРОМ
             if self.ray_hit.hit:
-                if self.ray_hit.entity is not None:
+                if getHitData() is not None:
 
                     if setting.developer_mode:
-                        self.hit_text = self.ray_hit.entity
+                        self.hit_text = getHitData()
 
                     if self.weapon.current_weapon:
                         self.cursor.texture = "assets/ui/crosshair.png"
@@ -646,32 +662,20 @@ class Player(Entity):
                         self.cursor.texture = "assets/ui/crosshair.png"
                         self.cursor.scale = .04
 
-                    if self.ray_hit.entity.id == "transition" or \
-                            self.ray_hit.entity.id == "transition_to_level":
-                        self.crosshair_tip_text = TKey("interact.go")
-                        self.press_f.enabled = True
+                    if getHitData().id == "transition" or getHitData().id == "transition_to_level":
+                        setCrosshairTip("interact.go")
 
-                    if self.ray_hit.entity.id == "loot_money":
-                        self.crosshair_tip_text = TKey("interact.loot.money")
-                        self.press_f.enabled = True
+                    if getHitData().id == "loot_money":
+                        setCrosshairTip("interact.loot.money")
 
-                    if self.ray_hit.entity.id == "loot":
-                        self.crosshair_tip_text = TKey("interact.loot")
-                        self.press_f.enabled = True
+                    if getHitData().id == "loot":
+                        setCrosshairTip("interact.loot")
 
-                    if self.ray_hit.entity.id == "npc":
-                        if self.ray_hit.entity.keys["profile"] in npc_profiles:
-                            self.crosshair_tip_text = TKey(npc_profiles[self.ray_hit.entity.keys["profile"]]["name"])
-                        else:
-                            if bug_trap.crash_game_msg("Error",
-                                                       "NPC profile [{0}] in assets/creatures/characters.json not found!".format(
-                                                               self.ray_hit.entity.keys["profile"]), 1):
-                                application.quit()
-                        self.press_f.enabled = True
+                    if getHitData().name == "pito_actor":
+                        setCrosshairTip(getHitData().profile["name"])
 
-                    if self.ray_hit.entity.id == "" or self.ray_hit.entity.id is None:
-                        self.crosshair_tip_text = ""
-                        self.press_f.enabled = False
+                    if getHitData().id == "" or getHitData().id is None:
+                        clearCrosshairText()
             else:
                 if setting.developer_mode:
                     self.hit_text = "None"
@@ -681,8 +685,7 @@ class Player(Entity):
                 else:
                     self.cursor.texture = "assets/ui/crosshair.png"
                     self.cursor.scale = .04
-                self.crosshair_tip_text = ""
-                self.press_f.enabled = False
+                clearCrosshairText()
 
             # если в режиме разработчика, то включаем полёт персонажа и вывод инфы
             if setting.developer_mode:
@@ -767,8 +770,6 @@ class Gameplay():
         # игровой процесс запущен
         gameplay = True
 
-        stalker = PitoActor("anim/pito_npc",tex_folder+"pbandit.png",idle_anim="idle",gasmask=False,weapon_hold="backpack")
-
         # цикл для проверки аргументов и изменение переменных
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -787,6 +788,8 @@ class Level(Entity):
         # ссылка на существующего гг
         self.player_data = p
         self.with_light = False
+        self.level_objects = []
+        self.npc_data = []
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -845,6 +848,15 @@ class Level(Entity):
                              rotation_y=get_player().rotation.y,
                              scale=obj["scale"])
 
+                    if obj["id"] == "npc":
+                        lvl_npc = PitoActor(obj["profile"])
+                        lvl_npc.position = obj["position"]
+                        lvl_npc.rotation = obj["rotation"]
+                        if "collider" in obj:
+                            lvl_npc.collider = BoxCollider(lvl_npc,center=obj["collider"]["pos"],
+                                                           size=obj["collider"]["size"])
+                        self.npc_data.append(lvl_npc)
+
                 # Cоздаём объект
                 lvl_obj = LevelObject(parent=self, model=obj["model"] if "model" in obj else "cube",
                                       texture=obj["texture"] if "texture" in obj else None,
@@ -881,7 +893,7 @@ class Level(Entity):
 
                 # присваиваем ему все ключи из файла с уровнем
                 lvl_obj.keys = obj
-
+                self.level_objects.append(lvl_obj)
 
         else:
             if bug_trap.crash_game_msg("Error","Level assets/levels/\"{0}\" not found!".format(self.level_id),1):
