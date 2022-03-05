@@ -1,0 +1,8 @@
+{
+  "idle": "assets/models/anim/pito_npc-idle",
+  "idle_arm": "assets/models/anim/pito_npc-idle_arm",
+  "idle_cross": "assets/models/anim/pito_npc-idle_cross",
+  "idle_weapon": "assets/models/anim/pito_npc-idle_weapon",
+  "idle_sit": "assets/models/anim/pito_npc-idle_sit",
+  "idle_sit_ground": "assets/models/anim/pito_npc-idle_sit_ground"
+}
