@@ -34,11 +34,12 @@ class Dialogue(Entity):
                     p.origin = (-.5, 0)
                     height += len (p.lines) / 100 * spacing
                     p.y -= height
-                    p.wordwrap = 90
+                    p.z = -1.1
+                    p.wordwrap = 70
                     p.color = color.dark_gray
 
             self.selector_id = 0
-            self.selector.position = (self.answers[0].x-0.04,self.answers[0].y)
+            self.selector.position = (self.answers[0].x-0.04,self.answers[0].y,-1.1)
             self.answers[0].color = color_orange
 
     def __init__(self, **kwargs):
@@ -48,15 +49,31 @@ class Dialogue(Entity):
         self.dialogue_file = ""
         self.click_sound = Audio ("assets/sounds/click", autoplay=False, loop=False)
 
+        # окно
         Entity(parent=self,model="quad",color=rgb(10,10,10),scale=window.size)
+
+        # рамка
         self.frame = Sprite (ui_folder + "16_9_frame.png", parent=self, scale=0.222)
+
+        # имя нпс
         self.npc_name = Text("NPC".upper(),parent=self,y=0.4,x=-0.7,color=color_orange)
+
+        # разделитель
         Entity (parent=self, y=0.37, x=0, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)
+
+        # текст диалога
         self.npc_dialogue = Text("...",parent=self,
             y=0.3,x=-0.7,color=color.white)
-        Text (TKey("dialogue.player.answers").upper (), parent=self, y=-0.17, x=0.61, color=color_orange)
 
-        Entity (parent=self, y=-0.2, x=0, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)
+        # ответы гг - титулка
+        Text (TKey("dialogue.player.answers").upper (), parent=self, y=-0.17, x=0.61,z=-1, color=color_orange)
+
+        self.answers_container = Entity(model="quad", parent=self, position=(0, -0.3, -1), scale=(2,1),
+                                      color=color.rgba(255,255,255,0))
+        self.answers_container.set_scissor(Vec3(-0.38, 0.09, -1), Vec3(0.38, -0.1, 1))
+
+        # разделитель
+        Entity (parent=self, y=-0.2, x=0,z=-1, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)
         self.selector = Sprite (ui_folder + "rad_icn.png", parent=self, y=2, x=2,
                                 scale=.21, origin=(-.5, 0))
 

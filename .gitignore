@@ -2,6 +2,5 @@
 tools/
 tools/NodeGraphQt/
 tools/editor_export/
-tools/*.png
-tools/*.py
+__pycache__/
 README.md

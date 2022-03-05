@@ -160,7 +160,7 @@ class Player(Entity):
         mouse.locked = setting.cursor_lock
         #self.filters = CommonFilters(application.base.win,application.base.cam)
         #self.filters.set_inverted()
-        #camera.shader = oblivion_postprocessing
+        #camera.shader = camera_grayscale_shader
         #camera.set_shader_input("c_R", 0.93)
         #camera.set_shader_input("c_G", 0.95)
         #camera.set_shader_input("c_B", 1.05)
@@ -481,6 +481,10 @@ class Player(Entity):
                 def getHitData():
                     return self.ray_hit.entity
 
+                def clearCrosshairText():
+                    self.crosshair_tip_text = ""
+                    self.press_f.enabled = False
+
                 # если объект имеет энтити и его id не пустой
                 if getHitData() and getHitData().id is not None:
                     # при нажатии кнопки взаимодействия
@@ -552,19 +556,17 @@ class Player(Entity):
                             destroy(getHitData())
                             self.crosshair_tip_text = ""
 
-                        if getHitData().id == "npc":
+                        if getHitData().name == "pito_actor":
                             # Если есть ключ с диалогом и НПС не торговец
-                            if npc_profiles[getHitData().keys["profile"]]["dialogues"] and npc_profiles[getHitData().keys["profile"]]["trader_profile"] is None:
+                            if getHitData().profile["dialogues"] and getHitData().profile["trader_profile"] is None:
                                 # Функция начала диалога
                                 def startDialog():
                                     self.dialogue.start_dialogue(d["dialogue"])
                                     self.dialogue.dialogue_file = d["dialogue"]
-                                    self.dialogue.npc_name.text = TKey(
-                                    npc_profiles[self.ray_hit.entity.keys["profile"]]["name"]).upper()
-                                    self.crosshair_tip_text = ""
-                                    self.press_f.disable()
+                                    self.dialogue.npc_name.text = TKey(getHitData().profile["name"]).upper()
+                                    clearCrosshairText()
 
-                                for d in npc_profiles[getHitData().keys["profile"]]["dialogues"]:
+                                for d in getHitData().profile["dialogues"]:
                                     # Если dont_has_event_key ключ существует, а has_event_key не существует
                                     if "dont_has_event_key" in d and "has_event_key" not in d:
                                         if not has_e_key(d["dont_has_event_key"]):
@@ -582,27 +584,22 @@ class Player(Entity):
                                         startDialog()
                                         break
                             # Если НПС имеет профиль торговца
-                            if npc_profiles[getHitData().keys["profile"]]["trader_profile"] is not None:
+                            if getHitData().profile["trader_profile"] is not None:
                                 # Если нет файла профиля - крашим игру
-                                if npc_profiles[getHitData().keys["profile"]]["trader_profile"] not in \
-                                    my_json.read("assets/creatures/traders"):
+                                if getHitData().profile["trader_profile"] not in my_json.read("assets/creatures/traders"):
                                         if bug_trap.crash_game_msg("Error", "Trader [{0}] ID not found in \"assets/creatures/traders.json\"!", 1):
                                             application.quit()
                                 else:
                                     self.trading.enable()
-                                    self.trading.trader_id = npc_profiles[getHitData().keys["profile"]]["trader_profile"]
+                                    self.trading.trader_id = getHitData().profile["trader_profile"]
                                     self.trading.buy = True
                                     self.trading.selector_id = 0
-                                    self.trading.fill_slots_with_items(npc_profiles[getHitData().keys["profile"]]["trader_profile"])
-                                    self.press_f.disable()
-                                    self.crosshair_tip_text = ""
+                                    self.trading.fill_slots_with_items(getHitData().profile["trader_profile"])
+                                    clearCrosshairText()
                         # запускаем луч, что бы убрать все надписи под прицелом
                         invoke(self.raycast_once, delay=.05)
 
-            if key == "escape" and \
-                    not self.dialogue.enabled and \
-                    not self.loot.enabled and \
-                    not self.trading.enabled:
+            if key == "escape" and not self.dialogue.enabled and not self.loot.enabled and not self.trading.enabled:
                 pause = True
                 invoke(self.pause_menu.enable, delay=0.001)
                 self.pause_menu.inventory_window = self.inventory

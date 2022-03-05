@@ -6,7 +6,7 @@
     ],
     "camera_fov": 75,
     "current_language": "ru",
-    "dev": true,
+    "dev": false,
     "first_launch": false,
     "languages": {
         "en": {
