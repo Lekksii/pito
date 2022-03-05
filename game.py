@@ -42,6 +42,7 @@ game_session = None
 pause = False
 isdead=False
 fps_mode = False
+show_hud = True
 
 # Пресеты для цветов
 color_orange = color.rgb(238, 157, 49)
@@ -129,6 +130,9 @@ def show_message(txt, life_time):
 
 # КЛАСС ИГРОКА
 class Player(Entity):
+    def hideHUD(self):
+        return color.rgba(1,1,1,0) if not show_hud else color.rgba(1,1,1,1)
+
     def __init__(self, **kwargs):
         super().__init__()
         # скорость перемещения камеры (для режима разработчика)
@@ -138,10 +142,10 @@ class Player(Entity):
         # текст под прицелом
         self.crosshair_tip_text = "Demo"
         # прицел в центре экрана
-        self.cursor = Sprite(ui_folder + "crosshair.png", parent=camera.ui, scale=.26)
+        self.cursor = Sprite(ui_folder + "crosshair.png", parent=camera.ui, scale=.26, color = self.hideHUD())
         # объект для текста под прицелом
         self.crosshair_tip = ui.UIText(parent=camera.ui, offset=(0.0015,0.0015), text=self.crosshair_tip_text, origin=(0, 0), y=0.04,
-                                       color=color_orange, scale=1, x=0, z=-0.001)
+                                       color=color_orange if show_hud else self.hideHUD(), scale=1, x=0, z=-0.001)
         # родитель камеры
         camera.parent = self.camera_pivot
         # позиция камеры
@@ -155,7 +159,7 @@ class Player(Entity):
         # мышь зафиксирована или нет
         mouse.locked = setting.cursor_lock
         #self.filters = CommonFilters(application.base.win,application.base.cam)
-        #self.filters.setAmbientOcclusion()
+        #self.filters.set_inverted()
         #camera.shader = oblivion_postprocessing
         #camera.set_shader_input("c_R", 0.93)
         #camera.set_shader_input("c_G", 0.95)
@@ -187,14 +191,16 @@ class Player(Entity):
         # -----INTERFACE----------------
 
         self.frame_game = Sprite(ui_folder + "fr_game_1.png", parent=camera.ui, origin=(-.5, .5), scale=.445,
-                                 position=(window.left.x - 0.002, window.top.y))
+                                 position=(window.left.x - 0.002, window.top.y), color=self.hideHUD())
 
         # фон полоски здоровья
         self.health_bar_gui = Sprite(ui_folder + "hp_ui.png", parent=camera.ui, origin=(-.5, .5),
-                                     scale=.4, position=(window.left.x + .02, window.top.y - .03, -0.001))
+                                     scale=.4, position=(window.left.x + .02, window.top.y - .03, -0.001),
+                                     color=self.hideHUD())
         # полоска здоровья
         self.health_bar = Entity(parent=camera.ui, model="quad", texture=ui_folder + "hp_bar.png", scale=(.22, .01),
-                                 position=(window.left.x + .08, window.top.y - .062, -0.002), origin=(-.5, 0))
+                                 position=(window.left.x + .08, window.top.y - .062, -0.002), origin=(-.5, 0),
+                                 color=self.hideHUD())
 
         # фон полоски радиации
         self.rad_bar_gui = Sprite(ui_folder + "antirad.png", parent=camera.ui, origin=(-.5, .5),
@@ -212,7 +218,7 @@ class Player(Entity):
                                       scale=.4, position=(.3, 0),
                                       color=color.clear)
 
-        self.work_in_progress = ui.UIText("WORK IN PROGRESS",offset=(0.0015,0.0015),color=color_red,y=-0.38)
+        self.work_in_progress = ui.UIText("WORK IN PROGRESS",offset=(0.0015,0.0015),color=color_red if show_hud else self.hideHUD(),y=-0.38)
 
         self.scope = None
 
@@ -232,14 +238,14 @@ class Player(Entity):
 
         self.ammo_counter = Sprite(ui_folder+"ammo_hud.png",scale=.25,
                                     position=(0,-.451,0.001),
-                                    parent=camera.ui)
+                                    parent=camera.ui, color=self.hideHUD())
 
         self.ammo_text = Text("12/12",position=(0,-.455,-0.002),origin=(0,0),parent=camera.ui,
-                              color=color_gray)
+                              color=color_gray if show_hud else self.hideHUD())
 
         self.shoot_sparkle = Sprite(ui_folder+"wm.png",
                                     position=(0.25,-0.29,0.001),scale=0.5,
-                                    parent=camera.ui,origin=(0,0),enabled=False)
+                                    parent=camera.ui,origin=(0,0),enabled=False,color=self.hideHUD())
 
         #self.ammo_icon = Sprite(ui_folder+"items/ammo_oc.png",
         #                            position=(-0.1,window.bottom.y+0.05,-0.001),scale=0.3,
@@ -253,7 +259,7 @@ class Player(Entity):
         # >> сообщение сбоку экрана
         self.msg = ui.UIText("", origin=(-.5, 0),offset=(0.0015, 0.0015), parent=camera.ui,
                              position=(window.left.x+0.02, 0),
-                             color=color_orange)
+                             color=color_orange if show_hud else self.hideHUD())
 
         #self.side_window = Sprite(ui_folder + "window_hud.png", scale=.25,
         #                           position=(window.left.x, window.bottom_left.y, 0.001),
@@ -268,18 +274,18 @@ class Player(Entity):
         if setting.developer_mode:
             # Рисуем окно с выводом дебаг информации
             # Темный фон
-            self.debug_info_window = Entity(parent=camera.ui, model="quad", color=color.rgba(10, 10, 10, 200),
+            self.debug_info_window = Entity(parent=camera.ui, model="quad", color=color.rgba(10, 10, 10, 200) if show_hud else self.hideHUD(),
                                             origin=(-.5, .5),
                                             position=Vec2(window.top_left.x + 0.02, window.top_left.y - 0.073),
                                             scale=Vec2(0.4, 0.4))
             # Текст на фоне
-            self.debug_text = Text(parent=camera.ui, text="null", color=color_orange, origin=(-.5, .5),
+            self.debug_text = Text(parent=camera.ui, text="null", color=color_orange if show_hud else self.hideHUD(), origin=(-.5, .5),
                                    position=(window.top_left.x + 0.03, window.top_left.y - 0.08, -0.003))
             # подсказка для управления камеры
             Text(parent=camera.ui, text="Q - Up\nE - Down\n\nRMB(Hold) - Rotate camera\n\nW A S D - Move\nESC - Quit",
-                 color=color_orange, origin=(-.5, -.5),
+                 color=color_orange if show_hud else self.hideHUD(), origin=(-.5, -.5),
                  position=(window.bottom_left.x + .03, window.bottom_left.y + .03),
-                 background=True)
+                 background=show_hud)
 
         # ПАРАМЕТРЫ ИГРОКА
         self.health = player_creature["start_max_hp"]
@@ -761,7 +767,7 @@ class Gameplay():
         # игровой процесс запущен
         gameplay = True
 
-        stalker = PitoActor("anim/pito_npc",tex_folder+"pbandit.png",idle_anim="idle_cross")
+        stalker = PitoActor("anim/pito_npc",tex_folder+"pbandit.png",idle_anim="idle",gasmask=False,weapon_hold="backpack")
 
         # цикл для проверки аргументов и изменение переменных
         for key, value in kwargs.items():

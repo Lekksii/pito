@@ -4,7 +4,7 @@ from ursina import Shader
 oblivion_postprocessing = Shader(language=Shader.GLSL,
 fragment='''
 //fragment shader, the interesting part!
-#version 400
+#version 430
 uniform sampler2D tex;  //the rendered framebuffer containing the color bound as sampler2D
 uniform vec2 window_size;    //the size of the window/framebuffer
 uniform float c_R = 255;

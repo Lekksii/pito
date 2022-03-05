@@ -79,6 +79,6 @@ if __name__ == "__main__":
 
     scene = Gameplay()
 
-    #scene = LevelEditor("ai_test")
+    #scene = LevelEditor("garbage_camp")
 
     app.run()

@@ -1,0 +1,7 @@
+.DS_Store
+tools/
+tools/NodeGraphQt/
+tools/editor_export/
+tools/*.png
+tools/*.py
+README.md

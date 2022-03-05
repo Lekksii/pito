@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Nodz" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pyqt-node-editor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tools/NodeGraphQt" vcs="Git" />
   </component>
 </project>

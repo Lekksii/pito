@@ -32,13 +32,16 @@ class UILinePanel(Entity):
             setattr (self, key, value)
 
 class UIText(Text):
+    def hideHUD(self):
+        return color.rgba(1,1,1,0) if not game.show_hud else color.rgba(1,1,1,1)
+
     def __init__(self,text="",origin=(0,0),offset=(0.001,0.001),color=color.white,**kwargs):
         super().__init__(parent=camera.ui, origin=origin)
         self.shadow = True
 
         if self.shadow:
             self.shadow_text = Text(text,parent=self,origin=self.origin,x=self.x+offset[0],
-                                y=self.y-offset[1],color=rgb(10,10,10),z=self.z+0.001)
+                                y=self.y-offset[1],color=rgb(10,10,10) if game.show_hud else self.hideHUD(),z=self.z+0.001)
         self.origin_text = Text (text, parent=self, origin=self.origin,color = color,x=self.x,
                                 y=self.y,z=self.z)
 

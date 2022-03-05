@@ -37,6 +37,9 @@ class Weapon():
             setattr (self, key, value)
 
 class WeaponSystem():
+    def hideHUD(self):
+        return color.rgba(1,1,1,0) if not game.show_hud else color.rgba(1,1,1,1)
+
     def __init__(self,**kwargs):
         super().__init__()
         self.current_weapon = None
@@ -137,7 +140,7 @@ class WeaponSystem():
             # >> Устанавливаем худ с оружия из слота
             game.get_player().weapon_2d_hud = Sprite(self.current_weapon.data["hud"], scale=.5,
                    position=(.65,-.33, 0.001),
-                   parent=camera.ui)
+                   parent=camera.ui, color = self.hideHUD())
             # >> Устанавливаем текст с кол-вом патронов
             self.update_ammo()
         # >> Если слот - автомат и он надет в инвентаре
@@ -167,7 +170,7 @@ class WeaponSystem():
             #print("[WeaponSystem] Creating new hud.")
             game.get_player().weapon_2d_hud = Sprite(self.current_weapon.data["hud"], scale=.5,
                    position=(.65,-.33, 0.001),
-                   parent=camera.ui)
+                   parent=camera.ui, color= self.hideHUD())
             # >> Если бесконечные патроны
             if self.infinite_ammo:
                 #print("[WeaponSystem] Found infinite ammo!")
