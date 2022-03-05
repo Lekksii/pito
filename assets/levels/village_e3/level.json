@@ -49,52 +49,33 @@
     {
       "id": "npc",
       "profile": "rusty_profile",
-      "model": "cube",
-      "position": [-9.26, 1.3, -9.51],
-      "rotation": [0, 0, 0],
-      "collider": "cube",
-      "scale": 0.5,
-      "color": [10, 10, 10, 128]
+      "position": [-9.26, 0.1, -9.51],
+      "rotation": [0, 35, 0]
     },
     {
       "id": "npc",
       "profile": "botan_profile",
-      "model": "cube",
-      "position": [-12.74, 1.5, -1.5],
-      "rotation": [0, 0, 0],
-      "collider": "box",
-      "scale": 0.5,
-      "color": [10, 10, 10, 128]
+      "position": [-12.74, 0.1, -1.5],
+      "rotation": [0, -45, 0]
     },
     {
       "id": "npc",
       "profile": "zabor_profile",
-      "model": "cube",
-      "position": [-9.56, 1, -1.25],
-      "rotation": [0, 0, 0],
-      "collider": "box",
-      "scale": 0.5,
-      "color": [10, 10, 10, 128]
+      "position": [-9.56, 0.1, -1.25],
+      "rotation": [0, 65, 0],
+      "collider": {"pos": [0,0.5,0],"size": [0.3,1.2,0.3]}
     },
     {
       "id": "npc",
       "profile": "galosh_profile",
-      "model": "cube",
-      "position": [-9, 0.68, -7.45],
-      "rotation": [0, 0, 0],
-      "collider": "box",
-      "scale": 0.5,
-      "color": [10, 10, 10, 128]
+      "position": [-9, 0.12, -7.25],
+      "rotation": [0, 45, 0]
     },
     {
       "id": "npc",
       "profile": "village_trader_profile",
-      "model": "cube",
-      "position": [1.06, 1.03, -4.67],
-      "rotation": [0, 0, 0],
-      "collider": "box",
-      "scale": 0.5,
-      "color": [10, 10, 10, 128]
+      "position": [1.06, 0, -4.67],
+      "rotation": [0, 45, 0]
     },
     {
       "model": "assets/levels/village_e3/terrain",
@@ -133,54 +114,6 @@
      {
       "model": "assets/levels/village_e3/fences_boxes_barrels",
       "texture": "texobj1.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "collider": null,
-      "scale": 1
-    },
-    {
-      "model": "assets/levels/village_e3/npc_weapons",
-      "texture": "texobj2.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "collider": null,
-      "scale": 1
-    },
-    {
-      "model": "assets/levels/village_e3/galosh_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "collider": null,
-      "scale": 1
-    },
-    {
-      "model": "assets/levels/village_e3/botan_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "collider": null,
-      "scale": 1
-    },
-    {
-      "model": "assets/levels/village_e3/red_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "collider": null,
-      "scale": 1
-    },
-    {
-      "model": "assets/levels/village_e3/zabor_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "collider": null,
-      "scale": 1
-    },
-    {
-      "model": "assets/levels/village_e3/trader_npc",
-      "texture": "pstalker.png",
       "position": [0, 0, 0],
       "rotation": [0, 180, 0],
       "collider": null,
