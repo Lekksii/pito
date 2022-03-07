@@ -326,6 +326,9 @@ class Player(Entity):
         for ek in player_creature["start_event_keys"]:
             self.event_keys.append(ek)
 
+        # Test dialogue launch
+        invoke(self.show_custom_dialogue, "tutorial_info", "info", delay=0.01)
+
         if options_file["first_launch"]:
             invoke(self.show_custom_dialogue,"tutorial_info","info",delay=0.01)
             my_json.change_key("assets/options", "first_launch", False)
