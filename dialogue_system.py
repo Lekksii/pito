@@ -19,7 +19,7 @@ color_sky_night = color.rgb (10, 10, 10)
 class Dialogue(Entity):
     def answers_update(self):
         if self.answers:
-            offset = -0.15
+            offset = 0.15
             spacing = 7
             height = 0.03
 
@@ -28,23 +28,31 @@ class Dialogue(Entity):
 
             for p in self.answers:
                 if isinstance (p, Text):
-                    p.x -= .7
+                    p.x -= 0.35
                     p.y = offset
-                    p.parent = self
+                    p.parent = self.answers_container
                     p.origin = (-.5, 0)
                     height += len (p.lines) / 100 * spacing
                     p.y -= height
-                    p.z = -1.1
+                    self.answers_pos.append(p.y)
+                    p.z = -2.1
+                    p.scale_x = 0.5
                     p.wordwrap = 70
                     p.color = color.dark_gray
 
             self.selector_id = 0
-            self.selector.position = (self.answers[0].x-0.04,self.answers[0].y,-1.1)
+            self.selector.position = (self.answers[0].x-0.025,self.answers[0].y,-1.1)
             self.answers[0].color = color_orange
+            self.arrow_up.color = color.clear
+            if len(self.answers) > 3:
+                self.arrow_down.color = color.white
+            else:
+                self.arrow_down.color = color.clear
 
     def __init__(self, **kwargs):
         super().__init__(parent=camera.ui,z=-0.1)
         self.answers=[]
+        self.answers_pos = []
         self.selector_id = 0
         self.dialogue_file = ""
         self.click_sound = Audio ("assets/sounds/click", autoplay=False, loop=False)
@@ -53,29 +61,34 @@ class Dialogue(Entity):
         Entity(parent=self,model="quad",color=rgb(10,10,10),scale=window.size)
 
         # рамка
-        self.frame = Sprite (ui_folder + "16_9_frame.png", parent=self, scale=0.222)
+        self.frame = Sprite (ui_folder + "16_9_frame.png", parent=self, scale=0.222, z=-2)
 
         # имя нпс
-        self.npc_name = Text("NPC".upper(),parent=self,y=0.4,x=-0.7,color=color_orange)
+        self.npc_name = Text("NPC".upper(),parent=self,z=-1,y=0.4,x=-0.7,color=color_orange)
 
         # разделитель
-        Entity (parent=self, y=0.37, x=0, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)
+        Entity (parent=self, y=0.37, x=0,z=-1.9, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)
 
         # текст диалога
         self.npc_dialogue = Text("...",parent=self,
-            y=0.3,x=-0.7,color=color.white)
+            y=0.3,x=-0.7,z=-2.2, color=color.white)
 
         # ответы гг - титулка
         Text (TKey("dialogue.player.answers").upper (), parent=self, y=-0.17, x=0.61,z=-1, color=color_orange)
 
-        self.answers_container = Entity(model="quad", parent=self, position=(0, -0.3, -1), scale=(2,1),
-                                      color=color.rgba(255,255,255,0))
-        self.answers_container.set_scissor(Vec3(-0.38, 0.09, -1), Vec3(0.38, -0.1, 1))
+        self.answers_container = Entity(model="quad", parent=self, y=-0.3,z=-2, scale=(2,1),
+                                      color=color.rgba(10,10,10,0))
+        self.answers_container.set_scissor(Vec3(-0.38, 0.09, -1), Vec3(0.38, -0.12, 1))
+
+        self.arrow_up = Sprite (ui_folder + "big_arrow_up.png", x=0.75, y=-0.22, parent=self, scale=0.222, z=-2)
+        self.arrow_down = Sprite(ui_folder + "big_arrow_down.png", x=0.75, y=-0.40, parent=self, scale=0.222, z=-2)
 
         # разделитель
         Entity (parent=self, y=-0.2, x=0,z=-1, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)
         self.selector = Sprite (ui_folder + "rad_icn.png", parent=self, y=2, x=2,
                                 scale=.21, origin=(-.5, 0))
+        self.selector.parent = self.answers_container
+        self.selector.scale_x = self.selector.scale_x/2
 
         for key, value in kwargs.items ():
             setattr (self, key, value)
@@ -117,13 +130,38 @@ class Dialogue(Entity):
                 application.quit()
 
     def input(self,key):
+
+        def upAnswers():
+            for a in self.answers:
+                a.y += len(a.lines) / 100 * 7
+
+        def downAnswers():
+            for a in self.answers:
+                a.y -= len(a.lines) / 100 * 7
+
+        def normalizeAnswers():
+            for i,a in enumerate(self.answers):
+                a.y = self.answers_pos[i]
+
         if self.enabled:
             if self.answers:
+
                 if key == "down arrow" or key == "s":
                     self.click_sound.play()
                     self.selector_id += 1
+
+                    if self.selector_id < len(self.answers):
+                        upAnswers()
+                        self.arrow_up.color = color.white
+
+                    if self.selector_id == len(self.answers)-1:
+                        self.arrow_down.color = color.clear
+
                     if self.selector_id > len (self.answers) - 1:
-                        self.answers[len (self.answers) - 1].color = color.dark_gray
+                        self.arrow_up.color = color.clear
+                        self.arrow_down.color = color.white
+                        normalizeAnswers()
+                        self.answers[len(self.answers) - 1].color = color.dark_gray
                         self.selector_id = 0
                     else:
                         self.answers[self.selector_id - 1].color = color.dark_gray
@@ -133,9 +171,17 @@ class Dialogue(Entity):
                 if key == "up arrow" or key == "w":
                     self.click_sound.play ()
                     self.selector_id -= 1
+
+                    if self.selector_id > -1:
+                        downAnswers()
+                        self.arrow_down.color = color.white
+
+                    if self.selector_id == 0:
+                        self.arrow_up.color = color.clear
+
                     if self.selector_id < 0:
-                        self.selector_id = len (self.answers) - 1
-                        self.answers[0].color = color.dark_gray
+                        normalizeAnswers()
+                        self.selector_id = 0
                     else:
                         self.answers[self.selector_id + 1].color = color.dark_gray
                     self.selector.y = self.answers[self.selector_id].y
