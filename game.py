@@ -313,6 +313,12 @@ class Player(Entity):
         # ----------------
         self.health = self.health_max
         # ----------------
+        self.at_marker_pos = False
+        self.transition_trigger = None
+        self.waypoints = []
+        self.wp_index = 0
+        self.last_waypoint = False
+        self.mouse_conrol = True
 
         if pause:
             self.pause_menu.enable()
@@ -327,7 +333,7 @@ class Player(Entity):
             self.event_keys.append(ek)
 
         # Test dialogue launch
-        invoke(self.show_custom_dialogue, "tutorial_info", "info", delay=0.01)
+        #invoke(self.show_custom_dialogue, "tutorial_info", "info", delay=0.01)
 
         if options_file["first_launch"]:
             invoke(self.show_custom_dialogue,"tutorial_info","info",delay=0.01)
@@ -417,6 +423,16 @@ class Player(Entity):
 
     def set_player_pos(self,x,y,z):
         self.position = (x,y,z)
+
+    def set_crosshair(self,b):
+        if not b:
+            self.crosshair_tip.color = color.clear
+            self.cursor.color = color.clear
+            self.press_f.color = color.clear
+        else:
+            self.crosshair_tip.color = color.white
+            self.cursor.color = color.white
+            self.press_f.color = color.white
 
     def get_player_pos(self):
         return self.position
@@ -518,29 +534,11 @@ class Player(Entity):
                             destroy(loading_icon, delay=1)
                         # если айди объекта "переход на уровень" то меняем уровень
                         if getHitData().id == "transition_to_level":
-                            at_marker_position = False
-                            get_player().position = lerp(get_player().position, getHitData().position, 1)
-                            if distance(get_player().position, getHitData().position) < 1:
-                                at_marker_position = True
-                            if at_marker_position:
-                                self.steps_sound.play()
-                                # зачерняем экран
-                                camera.overlay.color = color.black
-                                # создаём текст загрузки
-                                loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
-                                loading_icon = Animation("assets/ui/rads", fps=12, origin=(.5, 0), x=-.1,
-                                                         always_on_top=True,
-                                                         parent=camera.ui, scale=0.03)
-                                # удаляем текущий уровень
-                                destroy(get_current_level())
-                                # загружаем новый по айди из ключа "уровень"
-                                set_current_level(getHitData().keys["level"])
-                                self.crosshair_tip_text = ""
-                                # убрать чёрный экран
-                                invoke(setattr, camera.overlay, 'color', color.clear, delay=2)
-                                # удалить текст загрузки
-                                destroy(loading, delay=2)
-                                destroy(loading_icon, delay=2)
+                            self.at_marker_pos = False
+                            self.transition_trigger = getHitData()
+                            if "waypoints" in getHitData().keys:
+                                self.waypoints = my_json.read("assets/scripts/waypoints")[getHitData().keys["waypoints"]]["list"]
+
                         # если айди объекта "обыскать деньги" то
                         if getHitData().id == "loot_money":
                             # создаём текст с получаемой суммой
@@ -559,7 +557,7 @@ class Player(Entity):
                             destroy(getHitData())
                             self.crosshair_tip_text = ""
 
-                        if getHitData().name == "pito_actor":
+                        if getHitData().id == "npc":
                             # Если есть ключ с диалогом и НПС не торговец
                             if getHitData().profile["dialogues"] and getHitData().profile["trader_profile"] is None:
                                 # Функция начала диалога
@@ -629,12 +627,66 @@ class Player(Entity):
             # направление камеры
             self.direction = Vec3(camera.forward)
 
+            #animated transition between levels
+            if not self.at_marker_pos and self.transition_trigger is not None:
+                # moving by waypoints
+                self.mouse_conrol = False
+                self.set_crosshair(False)
+                if self.waypoints:
+                    i = self.wp_index
+                    wp = self.waypoints
+
+                    if distance(wp[i]["position"], get_player().position) < 5:
+                        if self.wp_index < len(wp)-1:
+                            self.wp_index += 1
+                        else:
+                            self.last_waypoint = True
+                            self.wp_index = 0
+
+                    else:
+                        if not self.last_waypoint:
+                            get_player().position = lerp(get_player().position, wp[i]["position"], time.dt * wp[i]["speed"])
+                            #get_player().shake(duration=1,magnitude=0.01,speed=0.7,direction=(0,1.5))
+                            get_player().rotation = lerp(get_player().rotation, wp[i]["rotation"], time.dt * wp[i]["speed"])
+
+                    if self.last_waypoint:
+                        get_player().position = lerp(get_player().position, self.transition_trigger.position, time.dt * 1)
+                        get_player().rotation = lerp(get_player().rotation, self.transition_trigger.rotation, time.dt * 1)
+
+                else:
+                    get_player().position = lerp(get_player().position, self.transition_trigger.position, time.dt * 1)
+                if distance(get_player().position, self.transition_trigger.position) < 3:
+                    self.steps_sound.play()
+                    # зачерняем экран
+                    camera.overlay.color = color.black
+                    # создаём текст загрузки
+                    loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
+                    loading_icon = Animation("assets/ui/rads", fps=12, origin=(.5, 0), x=-.1,
+                                             always_on_top=True,
+                                             parent=camera.ui, scale=0.03)
+                    # удаляем текущий уровень
+                    destroy(get_current_level())
+                    # загружаем новый по айди из ключа "уровень"
+                    set_current_level(self.transition_trigger.keys["level"])
+                    self.transition_trigger = None
+                    self.last_waypoint = False
+                    self.waypoints = []
+                    self.mouse_conrol = True
+                    self.set_crosshair(True)
+                    # убрать чёрный экран
+                    invoke(setattr, camera.overlay, 'color', color.clear, delay=2)
+                    # удалить текст загрузки
+                    destroy(loading, delay=2)
+                    destroy(loading_icon, delay=2)
+
+
             # если мышь двигается
-            if mouse.velocity > 0 or mouse.velocity < 0:
-                # пускаем луч
-                self.ray_hit = raycast(origin, self.direction, ignore=(self,), distance=50,
-                                       debug=setting.show_raycast_debug)
-                # self.hit_pos_info.text = self.raycast_point_pos_text
+            if self.mouse_conrol:
+                if mouse.velocity > 0 or mouse.velocity < 0:
+                    # пускаем луч
+                    self.ray_hit = raycast(origin, self.direction, ignore=(self,), distance=50,
+                                           debug=setting.show_raycast_debug)
+                    # self.hit_pos_info.text = self.raycast_point_pos_text
 
             def setCrosshairTip(text):
                 self.crosshair_tip_text = TKey(text)
@@ -653,7 +705,7 @@ class Player(Entity):
                 if getHitData() is not None:
 
                     if setting.developer_mode:
-                        self.hit_text = getHitData()
+                        self.hit_text = getHitData() if getHitData() else "None"
 
                     if self.weapon.current_weapon:
                         self.cursor.texture = "assets/ui/crosshair.png"
@@ -671,7 +723,7 @@ class Player(Entity):
                     if getHitData().id == "loot":
                         setCrosshairTip("interact.loot")
 
-                    if getHitData().name == "pito_actor":
+                    if getHitData().id == "npc":
                         setCrosshairTip(getHitData().profile["name"])
 
                     if getHitData().id == "" or getHitData().id is None:
@@ -716,42 +768,43 @@ class Player(Entity):
                                        "\n\nVEL X: " + str(round(mouse.velocity[0], 2)) + \
                                        "\nVEL Y: " + str(round(mouse.velocity[1], 2)) + \
                                        "\n\nHIT: " + str(self.hit_text)
-            if self.strange_mouse:
-                # Поворот камеры с помощью мышки
-                self.rot_average_x = 0
-                self.rot_average_y = 0
+            if self.mouse_conrol:
+                if self.strange_mouse:
+                    # Поворот камеры с помощью мышки
+                    self.rot_average_x = 0
+                    self.rot_average_y = 0
 
-                self.rot_y += mouse.velocity[0] * self.mouse_sensitivity[1]
-                self.rot_x += mouse.velocity[1] * self.mouse_sensitivity[0]
+                    self.rot_y += mouse.velocity[0] * self.mouse_sensitivity[1]
+                    self.rot_x += mouse.velocity[1] * self.mouse_sensitivity[0]
 
-                self.rot_array_y.append(self.rot_y)
-                self.rot_array_x.append(self.rot_x)
+                    self.rot_array_y.append(self.rot_y)
+                    self.rot_array_x.append(self.rot_x)
 
-                if len(self.rot_array_y) >= self.frame_count:
-                    self.rot_array_y.remove(self.rot_array_y[0])
-                if len(self.rot_array_x) >= self.frame_count:
-                    self.rot_array_x.remove(self.rot_array_x[0])
+                    if len(self.rot_array_y) >= self.frame_count:
+                        self.rot_array_y.remove(self.rot_array_y[0])
+                    if len(self.rot_array_x) >= self.frame_count:
+                        self.rot_array_x.remove(self.rot_array_x[0])
 
-                for rotY in self.rot_array_y:
-                    self.rot_average_y += rotY
-                for rotX in self.rot_array_x:
-                    self.rot_average_x += rotX
+                    for rotY in self.rot_array_y:
+                        self.rot_average_y += rotY
+                    for rotX in self.rot_array_x:
+                        self.rot_average_x += rotX
 
-                self.rot_average_y /= len(self.rot_array_y)
-                self.rot_average_x /= len(self.rot_array_x)
+                    self.rot_average_y /= len(self.rot_array_y)
+                    self.rot_average_x /= len(self.rot_array_x)
 
-                self.rotation_y += self.rot_average_y
-                self.rotation_y = clamp(self.rotation_y, self.rotation_range_y[0], self.rotation_range_y[1])
-                self.camera_pivot.rotation_x -= self.rot_average_x
-                self.camera_pivot.rotation_x = clamp(self.camera_pivot.rotation_x, -30, 30)
-            else:
-                self.rotation_y += mouse.velocity[0] * self.mouse_sensitivity[1]
-                self.rotation_y = clamp(self.rotation_y, self.rotation_range_y[0], self.rotation_range_y[1]) if not setting.developer_mode else self.rotation_y
-                self.camera_pivot.rotation_x -= mouse.velocity[1] * self.mouse_sensitivity[0]
-                self.camera_pivot.rotation_x = clamp(self.camera_pivot.rotation_x, -30, 30) if not setting.developer_mode else clamp(self.camera_pivot.rotation_x, -90, 90)
+                    self.rotation_y += self.rot_average_y
+                    self.rotation_y = clamp(self.rotation_y, self.rotation_range_y[0], self.rotation_range_y[1])
+                    self.camera_pivot.rotation_x -= self.rot_average_x
+                    self.camera_pivot.rotation_x = clamp(self.camera_pivot.rotation_x, -30, 30)
+                else:
+                    self.rotation_y += mouse.velocity[0] * self.mouse_sensitivity[1]
+                    self.rotation_y = clamp(self.rotation_y, self.rotation_range_y[0], self.rotation_range_y[1]) if not setting.developer_mode else self.rotation_y
+                    self.camera_pivot.rotation_x -= mouse.velocity[1] * self.mouse_sensitivity[0]
+                    self.camera_pivot.rotation_x = clamp(self.camera_pivot.rotation_x, -30, 30) if not setting.developer_mode else clamp(self.camera_pivot.rotation_x, -90, 90)
 
-            if not self.scope:
-                self.crosshair_tip.setText(self.crosshair_tip_text)
+                if not self.scope:
+                    self.crosshair_tip.setText(self.crosshair_tip_text)
 
 # Главный класс игрового процесса
 class Gameplay():
@@ -852,10 +905,23 @@ class Level(Entity):
                         lvl_npc = PitoActor(obj["profile"])
                         lvl_npc.position = obj["position"]
                         lvl_npc.rotation = obj["rotation"]
+                        lvl_npc.id = obj["id"]
+                        lvl_npc.keys = obj
                         if "collider" in obj:
                             lvl_npc.collider = BoxCollider(lvl_npc,center=obj["collider"]["pos"],
                                                            size=obj["collider"]["size"])
                         self.npc_data.append(lvl_npc)
+                        if "shader" in obj and obj["shader"]:
+                            lvl_npc.shader = colored_lights_shader
+
+                        if "ambient" in obj:
+                            _light = PandaAmbientLight('ambient_light')
+                            for l in level_data["light"]:
+                                if "id" in l and l["id"] == obj["ambient"]:
+                                    _light.setColor(color.rgba(l["color"][0], l["color"][1], l["color"][2], 1))
+                                    break
+
+                            lvl_npc.setLight(lvl_npc.attachNewNode(_light))
 
                 # Cоздаём объект
                 lvl_obj = LevelObject(parent=self, model=obj["model"] if "model" in obj else "cube",
