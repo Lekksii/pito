@@ -61,6 +61,7 @@
     {
       "id": "transition_to_level",
       "level": "intro_battle",
+      "waypoints": "intro_wp_0",
       "model": "cube",
       "position": [0, 2.04, 16],
       "rotation": [0, 0, 0],
