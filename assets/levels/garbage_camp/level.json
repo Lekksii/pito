@@ -78,17 +78,6 @@
       "collider": null,
       "scale": 1
     },
-    {
-      "model": "assets/levels/garbage_camp/weapons",
-      "texture": "texobj2.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "ambient": "npc_shadow_fill",
-      "shader": true,
-      "collider": null,
-      "scale": 1,
-      "double_sided": true
-    },
      {
       "model": "assets/levels/garbage_camp/uaz",
       "texture": "texobj1.png",
@@ -100,23 +89,21 @@
       "scale": 1
     },
     {
-      "model": "assets/levels/garbage_camp/trader_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
+      "id": "npc",
+      "profile": "village_trader_profile",
+      "position": [-1.6, 0, -6.7],
+      "rotation": [0, -120, 0],
+      "collider": {"pos": [0,0.5,0],"size": [0.3,1.2,0.3]},
       "ambient": "npc_shadow_fill",
-      "shader": true,
-      "collider": null,
-      "scale": 1
+      "shader": true
     },
     {
-      "model": "assets/levels/garbage_camp/harya_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "shader": true,
-      "collider": null,
-      "scale": 1
+      "id": "npc",
+      "profile": "rusty_profile",
+      "position": [-2.8, 0, -4.2],
+      "rotation": [0, -80, 0],
+      "ambient": "npc_shadow_fill",
+      "shader": true
     },
     {
       "model": "assets/levels/garbage_camp/krot_npc",
