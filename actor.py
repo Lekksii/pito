@@ -7,6 +7,7 @@ class PitoActor(Entity):
     def __init__(self,profile_id, **kwargs):
         #model,texture,gasmask=False,weapon="w_ak",idle_anim="idle",weapon_hold="r_hand"
         super().__init__()
+        self.id = ""
         self.keys = {}
         self.profile = my_json.read("assets/creatures/characters")[profile_id]
         self.anims = my_json.read("assets/creatures/animations")
@@ -38,7 +39,7 @@ class PitoActor(Entity):
 
         self.weapon_scale = 2.5
         self.weapon_model = "assets/models/"+self.npc_weapon
-        self.weapon_tex = "assets/textures/texobj2.png"
+        self.weapon_tex = "assets/textures/texobj2.png" if "w_tex" not in self.profile else self.profile["w_tex"]
 
         self.weapon = Entity(position=0, rotation=0, scale=self.weapon_scale,
                              model=self.weapon_model, texture=self.weapon_tex)
