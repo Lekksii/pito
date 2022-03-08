@@ -150,7 +150,7 @@ class Dialogue(Entity):
                     self.click_sound.play()
                     self.selector_id += 1
 
-                    if self.selector_id < len(self.answers):
+                    if self.selector_id < len(self.answers) and len(self.answers) > 3:
                         upAnswers()
                         self.arrow_up.color = color.white
 
@@ -159,8 +159,9 @@ class Dialogue(Entity):
 
                     if self.selector_id > len (self.answers) - 1:
                         self.arrow_up.color = color.clear
-                        self.arrow_down.color = color.white
-                        normalizeAnswers()
+                        if len(self.answers) > 3:
+                            self.arrow_down.color = color.white
+                            normalizeAnswers()
                         self.answers[len(self.answers) - 1].color = color.dark_gray
                         self.selector_id = 0
                     else:
@@ -172,7 +173,7 @@ class Dialogue(Entity):
                     self.click_sound.play ()
                     self.selector_id -= 1
 
-                    if self.selector_id > -1:
+                    if self.selector_id > -1 and len(self.answers) > 3:
                         downAnswers()
                         self.arrow_down.color = color.white
 
@@ -180,7 +181,8 @@ class Dialogue(Entity):
                         self.arrow_up.color = color.clear
 
                     if self.selector_id < 0:
-                        normalizeAnswers()
+                        if len(self.answers) > 3:
+                            normalizeAnswers()
                         self.selector_id = 0
                     else:
                         self.answers[self.selector_id + 1].color = color.dark_gray
