@@ -1,0 +1,17 @@
+{
+  "intro_wp_0": {
+    "level": "intro",
+    "list": [
+      {
+        "position": [0.24,1.78,-6.11],
+        "rotation": [-1.23,77,0],
+        "speed": 0.5
+      },
+      {
+        "position": [0.08,1.75,7.78],
+        "rotation": [2.52,2,0],
+        "speed": 0.6
+      }
+    ]
+  }
+}
