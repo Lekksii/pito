@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter.scrolledtext as scrolledText
+from tkinter import messagebox
 
 # Window
 app = Tk()
@@ -44,24 +45,48 @@ def InputField(root, var, row=0, column=0):
 
 
 def clear_btn_callback():
+    if checkVars():
+        item_id_value.set("")
+        item_name_value.set("")
+        item_caption_value.set("")
+        item_icon_value.set("")
+        item_price_value.set("0")
+        result.delete(1.0, END)
+
     print("Clear data")
 
+def checkVars():
+    if item_id_value.get() == "" and\
+    item_name_value.get() == "" and\
+    item_caption_value.get() == "" and \
+    item_icon_value.get() == "":
+        return False
+    else:
+        return True
+
+def onTypeChange(event):
+    pass
 
 def gen_data_callback():
-    result.configure(state="normal")
-    result.delete(1.0, END)
+    if checkVars():
 
-    result.insert(INSERT,
-                  """"item_id": {
-    "name": "name.link",
-    "caption": "caption.link",
-    "icon": "assets/ui/items/icon.png",
-    "price": 0,
-    "type": "type"
-    }""")
+        result.configure(state="normal")
+        result.delete(1.0, END)
 
+        def setVar(var):
+            return str(var.get()) if var.get() else "no_data"
 
+        data = """\""""+setVar(item_id_value)+"""\": {
+    "name": \""""+setVar(item_name_value)+"""\",
+    "caption": \""""+setVar(item_caption_value)+"""\",
+    "icon": "assets/ui/items/"""+setVar(item_icon_value)+""".png",
+    "price": """+setVar(item_price_value)+""",
+    "type": \""""+setVar(item_type_value)+"""\"
+    }"""
 
+        result.insert(INSERT,data)
+    else:
+        messagebox.showerror("Error!","Item data fields are empty!")
 
 itm_id_label = LabelText(workspace, text="Item ID:", row=0, column=0)
 itm_name_label = LabelText(workspace, text="Name:", row=1, column=0)
@@ -80,7 +105,7 @@ itm_name = InputField(workspace, item_name_value, row=1, column=1)
 itm_caption = InputField(workspace, item_caption_value, row=2, column=1)
 itm_icon = InputField(workspace, item_icon_value, row=3, column=1)
 itm_price = InputField(workspace, item_price_value, row=4, column=1)
-itm_type = OptionMenu(workspace, item_type_value, *types)
+itm_type = OptionMenu(workspace, item_type_value, *types, command=onTypeChange)
 itm_type.config(width=18)
 itm_type.grid(row=5, column=1)
 

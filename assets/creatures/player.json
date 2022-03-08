@@ -5,5 +5,5 @@
   "use_items_after_start": ["w_pistol"],
   "start_quests": ["quest_find_cap"],
   "start_event_keys": [],
-  "start_level": "village_e3"
+  "start_level": "intro"
 }

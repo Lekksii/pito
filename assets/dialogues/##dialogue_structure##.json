@@ -5,12 +5,12 @@
       "text": "TEXT IN NPC WINDOW",
       "answers": [
         {
-          "text": "PLAYER ANSWER 1, MAXIMUM 3!!!",
+          "text": "PLAYER ANSWER",
           "go_to": "NEXT DIALOGUE ID, OR SPECIAL KEYS (close_dialog - close dialogue window, close_game - quit from game)",
           "actions": {
             "add_money": 0,
             "del_money": 0,
-            "add_e_key": ["event.key.id - you can create any id, just remember it and use"],
+            "add_e_key": ["event.key.id - you can create any id, just remember it for usage"],
             "del_e_key": ["event.key.id"],
             "add_quest": ["quest_id"],
             "add_item": ["item_id"],
