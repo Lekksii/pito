@@ -1,4 +1,5 @@
 from ursina import *
+from ursina import curve
 from ursina.shaders import *
 from ursina.shaders import ssao_shader
 from pito_light import *
@@ -126,6 +127,9 @@ def show_message(txt, life_time):
     get_player().msg.setText("")
     get_player().msg.setText(txt)
     invoke(get_player().msg.setText, "", delay=life_time)
+
+def set_player_to_level_spawn_point():
+    get_player().position = get_current_level().spawn_point["position"]
 
 
 # КЛАСС ИГРОКА
@@ -347,6 +351,31 @@ class Player(Entity):
         self.dialogue.dialogue_file = id
         self.dialogue.npc_name.text = name.upper()
 
+    def load_location(self,level):
+        self.waypoints.clear()
+        self.steps_sound.play()
+        # зачерняем экран
+        camera.overlay.color = color.black
+        # создаём текст загрузки
+        loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
+        loading_icon = Animation("assets/ui/rads", fps=12, origin=(.5, 0), x=-.1,
+                                 always_on_top=True,
+                                 parent=camera.ui, scale=0.03)
+        # удаляем текущий уровень
+        destroy(get_current_level())
+        # загружаем новый по айди из ключа "уровень"
+        set_current_level(level)
+        self.transition_trigger = None
+        self.at_marker_pos = True
+        self.mouse_conrol = True
+        self.set_crosshair(True)
+        self.raycast_once()
+        # убрать чёрный экран
+        invoke(setattr, camera.overlay, 'color', color.clear, delay=2)
+        # удалить текст загрузки
+        destroy(loading, delay=2)
+        destroy(loading_icon, delay=2)
+
     def antirad_counter(self):
         if self.radiation and self.radiation_timer <= 0:
             self.rad_bar_gui.color = color.clear
@@ -426,13 +455,13 @@ class Player(Entity):
 
     def set_crosshair(self,b):
         if not b:
-            self.crosshair_tip.color = color.clear
-            self.cursor.color = color.clear
-            self.press_f.color = color.clear
+            self.crosshair_tip.disable()
+            self.cursor.disable()
+            self.press_f.disable()
         else:
-            self.crosshair_tip.color = color.white
-            self.cursor.color = color.white
-            self.press_f.color = color.white
+            self.crosshair_tip.enable()
+            self.cursor.enable()
+            self.press_f.enable()
 
     def get_player_pos(self):
         return self.position
@@ -448,7 +477,7 @@ class Player(Entity):
         global gameplay
         global pause
 
-        if not pause and not self.dialogue.enabled and not self.loot.enabled:
+        if not pause and not self.dialogue.enabled and not self.loot.enabled and not self.waypoints:
             # >> Стрельба
             if key == "left mouse down" and self.weapon.current_weapon:
                 if self.weapon.current_weapon.clip > 0:
@@ -534,10 +563,22 @@ class Player(Entity):
                             destroy(loading_icon, delay=1)
                         # если айди объекта "переход на уровень" то меняем уровень
                         if getHitData().id == "transition_to_level":
+
                             self.at_marker_pos = False
                             self.transition_trigger = getHitData()
-                            if "waypoints" in getHitData().keys:
+                            # Если нашли ключевые точки перемещения камеры, то идём по ним
+                            if "waypoints" in getHitData().keys and options_file["waypoint_movement"]:
+                                def move_towards(index):
+                                    get_player().animate_position(self.waypoints[index]["position"],
+                                                                  duration=self.waypoints[index]["speed"],
+                                                                  curve=curve.linear)
                                 self.waypoints = my_json.read("assets/scripts/waypoints")[getHitData().keys["waypoints"]]["list"]
+                                move_towards(0)
+                                self.set_crosshair(False)
+                                self.raycast_once()
+                                self.mouse_conrol = False
+                            else:
+                                self.load_location(self.transition_trigger.keys["level"])
 
                         # если айди объекта "обыскать деньги" то
                         if getHitData().id == "loot_money":
@@ -630,54 +671,33 @@ class Player(Entity):
             #animated transition between levels
             if not self.at_marker_pos and self.transition_trigger is not None:
                 # moving by waypoints
-                self.mouse_conrol = False
-                self.set_crosshair(False)
-                if self.waypoints:
-                    i = self.wp_index
+
+                last_pos = get_player().position
+                if self.waypoints is not None:
                     wp = self.waypoints
 
-                    if distance(wp[i]["position"], get_player().position) < 5:
-                        if self.wp_index < len(wp)-1:
-                            self.wp_index += 1
-                        else:
-                            self.last_waypoint = True
-                            self.wp_index = 0
+                    if distance(wp[self.wp_index]["position"], get_player().position) > 0.05:
+                        camera.look_at(self.transition_trigger, axis="forward")
+                        #camera.shake(duration=1,magnitude=2,speed=.8,direction=(0,1))
 
-                    else:
-                        if not self.last_waypoint:
-                            get_player().position = lerp(get_player().position, wp[i]["position"], time.dt * wp[i]["speed"])
-                            #get_player().shake(duration=1,magnitude=0.01,speed=0.7,direction=(0,1.5))
-                            get_player().rotation = lerp(get_player().rotation, wp[i]["rotation"], time.dt * wp[i]["speed"])
+                    if distance(wp[self.wp_index]["position"], get_player().position) <= 0.05 and self.wp_index < len(wp)-1:
+                        print("wp"+str(self.wp_index)+" is reached!")
+                        self.wp_index += 1
+                        print("going to new wp"+str(self.wp_index))
+                        get_player().animate_position(self.waypoints[self.wp_index]["position"],
+                                                  duration=self.waypoints[self.wp_index]["speed"],
+                                                  curve=curve.linear)
 
-                    if self.last_waypoint:
-                        get_player().position = lerp(get_player().position, self.transition_trigger.position, time.dt * 1)
-                        get_player().rotation = lerp(get_player().rotation, self.transition_trigger.rotation, time.dt * 1)
+                    if distance(wp[len(wp)-1]["position"], get_player().position) <= 0.05:
+                        print("reached last wp"+str(self.wp_index)+", going to trigger!")
+                        get_player().position = self.transition_trigger.position if self.transition_trigger else \
+                            (0,0,0)
+                        self.wp_index = 0
 
-                else:
-                    get_player().position = lerp(get_player().position, self.transition_trigger.position, time.dt * 1)
-                if distance(get_player().position, self.transition_trigger.position) < 3:
-                    self.steps_sound.play()
-                    # зачерняем экран
-                    camera.overlay.color = color.black
-                    # создаём текст загрузки
-                    loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
-                    loading_icon = Animation("assets/ui/rads", fps=12, origin=(.5, 0), x=-.1,
-                                             always_on_top=True,
-                                             parent=camera.ui, scale=0.03)
-                    # удаляем текущий уровень
-                    destroy(get_current_level())
-                    # загружаем новый по айди из ключа "уровень"
-                    set_current_level(self.transition_trigger.keys["level"])
-                    self.transition_trigger = None
-                    self.last_waypoint = False
-                    self.waypoints = []
-                    self.mouse_conrol = True
-                    self.set_crosshair(True)
-                    # убрать чёрный экран
-                    invoke(setattr, camera.overlay, 'color', color.clear, delay=2)
-                    # удалить текст загрузки
-                    destroy(loading, delay=2)
-                    destroy(loading_icon, delay=2)
+                if distance(get_player().position, self.transition_trigger.position) < 0.5:
+                    camera.rotation = (0,0,0)
+                    get_player().position = last_pos
+                    self.load_location(self.transition_trigger.keys["level"])
 
 
             # если мышь двигается
@@ -842,6 +862,7 @@ class Level(Entity):
         self.player_data = p
         self.with_light = False
         self.level_objects = []
+        self.spawn_point = None
         self.npc_data = []
 
         for key, value in kwargs.items():
@@ -889,7 +910,11 @@ class Level(Entity):
                 if "id" in obj:
                     # Присваиваем начальную позицию гг, равную позиции спавн точки
                     if obj["id"] == "spawn_point":
-                        self.player_data.position = obj["position"]
+                        print("OLD POS: "+str(get_player().position))
+                        print("SP: "+str(obj["position"]))
+                        get_player().position = obj["position"]
+                        print("NEW POS: " + str(get_player().position))
+                        self.spawn_point = obj
 
                     if obj["id"] == "animation":
                         Animation(tex_folder + obj["sequence"], position=obj["position"], rotation=obj["rotation"],
