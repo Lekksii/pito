@@ -5,8 +5,9 @@
         9
     ],
     "camera_fov": 75,
-    "current_language": "ru",
-    "dev": true,
+    "waypoint_movement": true,
+    "current_language": "en",
+    "dev": false,
     "first_launch": false,
     "languages": {
         "en": {
