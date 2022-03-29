@@ -54,6 +54,7 @@
     {
       "id": "transition_to_level",
       "level": "village",
+      "waypoints": "intro_wp_1",
       "model": "cube",
       "position": [1.5, 2.1, 25.5],
       "rotation": [0, 0, 0],
