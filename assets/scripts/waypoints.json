@@ -4,13 +4,28 @@
     "list": [
       {
         "position": [0.24,1.78,-6.11],
-        "rotation": [-1.23,77,0],
-        "speed": 0.5
+        "rotation": [0,0,0],
+        "speed": 2
       },
       {
         "position": [0.08,1.75,7.78],
-        "rotation": [2.52,2,0],
-        "speed": 0.6
+        "rotation": [0,0,0],
+        "speed": 2
+      }
+    ]
+  },
+  "intro_wp_1": {
+    "level": "intro_battle",
+    "list": [
+      {
+        "position": [-0.63,1.98,-4.42],
+        "rotation": [0,0,0],
+        "speed": 2
+      },
+      {
+        "position": [0.52,1.98,19.57],
+        "rotation": [0,0,0],
+        "speed": 2
       }
     ]
   }
