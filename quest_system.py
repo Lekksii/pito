@@ -1,6 +1,7 @@
 from ursina import *
 import my_json
 import game
+import pda
 from language_system import TKey
 
 system = None
@@ -22,6 +23,16 @@ class Quests():
                                    q["reward"],q["pda"] if "pda" in q else None))
                 break
         invoke(game.show_message,TKey ("message.new.quest"), 5,delay=0.001)
+        invoke(game.enable_pda_in_pause,True,delay=0.0001)
+
+    def has_quest(self,quest_id):
+        for q in self.quests_list:
+            if q.id == quest_id:
+                return True
+                break
+            else:
+                return False
+                break
 
     def get_quest(self,quest_id):
         for q in self.quests_list:
@@ -81,9 +92,20 @@ class quest_element():
                 for items in self.reward["items"]:
                     game.get_player().inventory.add_item(items)
 
+            if "add_e_key" in self.reward:
+                for add_e_key in self.reward["add_e_key"]:
+                    game.add_e_key(add_e_key)
+            if "del_e_key" in self.reward:
+                for del_e_key in self.reward["del_e_key"]:
+                    game.del_e_key(del_e_key)
+
             for q_itm in self.quest_items:
                 game.get_player().inventory.delete_item(q_itm)
                 print("[{0}] was deleted from inventory by quest!".format(q_itm))
+
+            if self.pda:
+                game.get_player().pause_menu.pda_window.delete_marker(self.pda["id"])
+                print("[DEBUG QUEST]: Quest marker [{0}] was deleted!".format(self.pda["id"]))
 
             for q in system.quests_list:
                 if q.id == self.id:

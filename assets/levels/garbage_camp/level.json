@@ -90,7 +90,7 @@
     },
     {
       "id": "npc",
-      "profile": "village_trader_profile",
+      "profile": "garbage_trader_profile",
       "position": [-1.6, 0, -6.7],
       "rotation": [0, -120, 0],
       "collider": {"pos": [0,0.5,0],"size": [0.3,1.2,0.3]},
@@ -99,30 +99,28 @@
     },
     {
       "id": "npc",
-      "profile": "rusty_profile",
+      "profile": "harya_profile",
       "position": [-2.8, 0, -4.2],
       "rotation": [0, -80, 0],
       "ambient": "npc_shadow_fill",
       "shader": true
     },
     {
-      "model": "assets/levels/garbage_camp/krot_npc",
-      "texture": "pstalker.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
-      "shader": true,
-      "collider": null,
-      "scale": 1
+      "id": "npc",
+      "profile": "krot_profile",
+      "position": [2.25, 0, -0.15],
+      "rotation": [0, 18, 0],
+      "collider": {"pos": [0,0.5,0],"size": [0.3,1.2,0.3]},
+      "ambient": "npc_shadow_fill",
+      "shader": true
     },
     {
-      "model": "assets/levels/garbage_camp/batka_npc",
-      "texture": "psoldier.png",
-      "position": [0, 0, 0],
-      "rotation": [0, 180, 0],
+      "id": "npc",
+      "profile": "batka_profile",
+      "position": [3.45, 0, -2.32],
+      "rotation": [0, 18, 0],
       "ambient": "npc_shadow_fill",
-      "shader": true,
-      "collider": null,
-      "scale": 1
+      "shader": true
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "village_marker": {
+    "name": "pda.map.village",
+    "spot": "area_neutral.png",
+    "position": [0.06,-0.22],
+    "level_id": "village"
+  }
+}

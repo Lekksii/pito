@@ -6,8 +6,8 @@
     "items": [
       "medkit",
       "antirad",
-      "ammo_ak",
       "w_ak",
+      "ammo_ak",
       "jacket",
       "jacket_bandit"
     ]
@@ -20,8 +20,8 @@
       "medkit",
       "medkit_army",
       "antirad",
-      "ammo_ak",
       "w_ak",
+      "ammo_ak",
       "jacket",
       "jacket_bandit",
       "antigas_armor",

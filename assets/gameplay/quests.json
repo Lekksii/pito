@@ -11,9 +11,10 @@
     "title": "quest.camp.name",
     "description": "quest.camp.name",
     "pda": {
+      "id": "find_camp_spot",
       "spot": "area_neutral.png",
       "position": [0.06,-0.22],
-      "level_id": "village_e3"
+      "level_id": "village"
     },
     "quest_items": [],
     "reward": {}
@@ -23,9 +24,10 @@
     "title": "quest.rusty.1.name",
     "description": "quest.rusty.1.name",
     "pda": {
+      "id": "find_whistle_spot",
       "spot": "area_enemy.png",
       "position": [0.06,-0.22],
-      "level_id": "village_e3"
+      "level_id": "village"
     },
     "quest_items": ["af_sparkle"],
     "reward": {
@@ -38,6 +40,7 @@
     "description": "quest.galosh.0.name",
     "quest_items": [],
     "pda": {
+      "id": "find_medusa_spot",
       "spot": "area_enemy.png",
       "position": [0.11,-0.23],
       "level_id": "bandits_camp"
@@ -52,13 +55,23 @@
     "title": "quest.rusty.0.name",
     "description": "quest.rusty.0.caption",
     "pda": {
+      "id": "forest_road_spot",
       "spot": "area_enemy.png",
       "position": [0.11,-0.17],
-      "level_id": "village"
+      "level_id": "forest_road"
     },
     "quest_items": [],
     "reward": {
-      "money": 150
+      "money": 250,
+      "add_e_key": ["rusty.second.dialogue.start"],
+      "del_e_key": ["rusty.no.dialogue"]
     }
+  },
+  {
+  "id": "quest_talk_radio",
+  "title": "quest.radio.use.name",
+  "description": "quest.radio.use.name",
+  "quest_items": [],
+  "reward": {}
   }
 ]

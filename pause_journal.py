@@ -15,7 +15,11 @@ color_green = color.rgb (40, 190, 56)
 
 class JournalWindow(Entity):
     def journal_update(self):
-        self.quests.clear()
+        if len(self.quests) != 0:
+            for q in self.quests:
+                destroy(q)
+            self.quests.clear()
+
         for q in game.get_player().quests.quests_list:
             self.quests.append(Text(q.title,color=color_orange))
 
@@ -24,8 +28,8 @@ class JournalWindow(Entity):
             spacing = .01
             height = 0.01 - spacing
 
-            if isinstance (self.quests, dict):
-                self.quests = self.quests.values ()
+            if isinstance (self.quests, list):
+                self.quests = self.quests
 
             for p in self.quests:
                 if isinstance (p, Text):

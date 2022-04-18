@@ -328,6 +328,22 @@ class Inventory(Entity):
                             game.get_player().armor += selected_item["on_use"]["armor"]
 
                     def usable_items_effects():
+                        # >> Если есть поле диалога
+                        if "dialogue" in selected_item:
+                            game.get_player().weapon.update_ammo_rifle()
+                            invoke(game.get_player().show_custom_dialogue, selected_item["dialogue"]["id"],
+                                   TKey(selected_item["dialogue"]["name"]), delay=0.01)
+                            self.selector_id = 0
+                            self.update_cursor()
+                            self.root_window.disable()
+                            self.disable()
+                            game.pause = False
+
+                        # >> Если есть поле function
+                        if "function" in selected_item:
+                            Func(selected_item["on_use"]["function"]["name"],
+                                 selected_item["on_use"]["function"]["args"])
+
                         # >> Если есть поле лечения в коллбеке "При использовании"
                         if "heal" in selected_item["on_use"]:
                             # >> Если здоровье меньше максимального

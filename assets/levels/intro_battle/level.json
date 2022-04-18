@@ -23,7 +23,7 @@
       "texture": "objects/terrain_type2.png",
       "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "collider": null,
+      "collider": "mesh",
       "scale": 1
     },
     {
@@ -31,7 +31,7 @@
       "texture": "texobj2.png",
       "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "collider": null,
+      "collider": "mesh",
       "scale": 1
     },
     {
@@ -39,7 +39,7 @@
       "texture": "texforest1.png",
       "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "collider": null,
+      "collider": "mesh",
       "scale": 1,
       "double_sided": true
     },
@@ -48,19 +48,31 @@
       "texture": "texobj1.png",
       "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "collider": null,
+      "collider": "mesh",
       "scale": 1
     },
     {
-      "id": "transition_to_level",
-      "level": "village",
-      "waypoints": "intro_wp_1",
-      "model": "cube",
-      "position": [1.5, 2.1, 25.5],
+      "model": "assets/levels/intro_battle/collider",
+      "color": [255, 255, 255, 0],
+      "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "collider": "box",
-      "scale": 4,
-      "color": [10, 10, 10, 128]
+      "collider": "mesh",
+      "scale": 1,
+      "texture": "null.png"
+    },
+    {
+      "id": "enemy",
+      "profile": "bandit",
+      "state": "attack_from_left",
+      "position": [-5.01, 0, -3.47],
+      "rotation": [0, -15, 0]
+    },
+    {
+      "id": "enemy",
+      "profile": "bandit",
+      "state": "attack_from_down",
+      "position": [5.3, 0, -2.21],
+      "rotation": [0, 25, 0]
     }
   ]
 }

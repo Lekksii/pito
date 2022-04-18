@@ -1,7 +1,14 @@
 {
   "PROFILE_ID":{
     "name": "name.key.of.your.npc - value for key write in assets/texts/lang_{your lang}",
-    "trader_profile": null,
+    "trader_profile": "here is trader profile id if NPC must be a trader, look in traders.json, or null",
+    "model": "anim/pito_npc - 3D model of NPC that has animations and skeleton, *.egg file",
+    "texture": "pstalker - texture of npc from assets/textures/*.png",
+    "idle_animation": "idle_weapon - animation from models/anim/*.egg file",
+    "weapon": "w_ak - 3D model from assets/models/*.obj",
+    "gasmask": "true or false - attach gasmask model on NPC's head",
+    "gasmask_type": "antigas/elite - texture of antigas",
+    "weapon_hold": "r_hand - attach points of NPC model, r_hand, l_hand, backpack",
     "dialogues": [
       {
         "has_event_key": "event.key.id - if player has this key, dialogue will run, else - not!",

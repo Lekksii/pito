@@ -24,6 +24,10 @@
         "dialogue": "rusty_dialogue_1"
       },
       {
+        "has_event_key": "rusty.quest.whistle.not.complete",
+        "dialogue": "rusty_no_dialogue_quest_bandits"
+      },
+      {
         "has_event_key": "rusty.quest.bandits.not.complete",
         "dialogue": "rusty_no_dialogue_quest_bandits"
       },
@@ -105,10 +109,234 @@
     "weapon": "w_ak",
     "gasmask": false,
     "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "whistler_profile":{
+    "name": "npc.svistun.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "coward_profile":{
+    "name": "npc.trus.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pbandit",
+    "idle_animation": "idle_sit_ground",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "harya_profile":{
+    "name": "npc.harya.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "krot_profile":{
+    "name": "npc.krot.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_sit_ground",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "batka_profile":{
+    "name": "npc.batka.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "psoldier",
+    "idle_animation": "idle",
+    "weapon": "w_groza",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
     "weapon_hold": "backpack",
     "dialogues": [
       {
-        "dialogue": "test_many_answers"
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "captain_profile":{
+    "name": "npc.cap.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_sit_ground",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "manikovsky_profile":{
+    "name": "npc.manikovsky.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "psoldier",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_groza",
+    "gasmask": true,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "kaizanovsky_profile":{
+    "name": "npc.kaizanovsky.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "psoldier",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_groza",
+    "gasmask": true,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "belomor_profile":{
+    "name": "npc.belomor.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+    "gutalin_profile":{
+    "name": "npc.gutalin.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_groza",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "shlang_profile":{
+    "name": "npc.shlang.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "psoldier",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_lr300",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "third_trader_profile":{
+    "name": "npc.village.trader.name",
+    "trader_profile": "garbage_trader",
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_sit",
+    "weapon": "w_groza",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "garbage_trader_profile":{
+    "name": "npc.village.trader.name",
+    "trader_profile": "garbage_trader",
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_sit",
+    "weapon": "w_ak",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
+      }
+    ]
+  },
+  "cobold_profile":{
+    "name": "npc.kobold.name",
+    "trader_profile": null,
+    "model": "anim/pito_npc",
+    "texture": "pstalker",
+    "idle_animation": "idle_weapon",
+    "weapon": "w_lr300",
+    "gasmask": false,
+    "gasmask_type": "antigas/elite",
+    "weapon_hold": "r_hand",
+    "dialogues": [
+      {
+        "dialogue": "no_dialogue"
       }
     ]
   },

@@ -4,6 +4,8 @@ from ursina.shaders import *
 from ursina.shaders import ssao_shader
 from pito_light import *
 from direct.filter.CommonFilters import CommonFilters
+from panda3d.core import loadPrcFileData
+import panda3d.core
 from inventory_system import Inventory
 from weapon_system import WeaponSystem
 from quest_system import Quests
@@ -13,7 +15,7 @@ from loot_system import LootWindow
 from trading_system import TradeWindow
 from skills_system import SkillsWindow
 from pda import PDA
-#from tkinter import Tk
+import pyperclip
 from camera_effects_shader import *
 from language_system import TKey
 import setting
@@ -41,7 +43,7 @@ gameplay = True
 # Переменная, в которой хранится класс игрового процесса
 game_session = None
 pause = False
-isdead=False
+isdead = False
 fps_mode = False
 show_hud = True
 
@@ -88,13 +90,8 @@ def set_current_level(lvl):
 
 
 # скопировать текст в буфер обмена
-#def copy_to_clipboard(string):
-#    r = Tk()
-#    r.withdraw()
-#    r.clipboard_clear()
-#    r.clipboard_append(str(string))
-#    r.update()  # now it stays on the clipboard after the window is closed
-#    r.destroy()
+def copy_to_clipboard(string):
+    pyperclip.copy(string)
 
 
 # что-то типа инфопоршней из оригинальной трилогии сталкера
@@ -162,12 +159,16 @@ class Player(Entity):
         camera.clip_plane_far = 500
         # мышь зафиксирована или нет
         mouse.locked = setting.cursor_lock
-        #self.filters = CommonFilters(application.base.win,application.base.cam)
-        #self.filters.set_inverted()
+        #loadPrcFileData('','coordinate-system z-up-right')
+        self.filters = CommonFilters(application.base.win,application.base.cam)
+        #self.sun = DirectionalLight()
+        #self.filters.set_half_pixel_shift()
+        #loadPrcFileData('', 'coordinate-system y-up-left')
         #camera.shader = camera_grayscale_shader
         #camera.set_shader_input("c_R", 0.93)
         #camera.set_shader_input("c_G", 0.95)
         #camera.set_shader_input("c_B", 1.05)
+        #print(window.getConfigProperties())
 
 
 
@@ -185,6 +186,7 @@ class Player(Entity):
         self.rot_x = 0
         self.rot_y = 0
         self.frame_count = 2
+        self.waypoint_mode = False
         self.strange_mouse = False
         self.radiation_sound = Audio(sound_folder+"radiation",autoplay=False,volume=0.5)
         self.steps_sound = Audio(sound_folder+"walk",autoplay=False, loop=False)
@@ -222,7 +224,7 @@ class Player(Entity):
                                       scale=.4, position=(.3, 0),
                                       color=color.clear)
 
-        self.work_in_progress = ui.UIText("WORK IN PROGRESS",offset=(0.0015,0.0015),color=color_red if show_hud else self.hideHUD(),y=-0.38)
+        self.work_in_progress = ui.UIText("WORK IN PROGRESS",offset=(0.0015,0.0015),color=color_red if show_hud else self.hideHUD(),y=window.top.y-0.1)
 
         self.scope = None
 
@@ -278,15 +280,15 @@ class Player(Entity):
         if setting.developer_mode:
             # Рисуем окно с выводом дебаг информации
             # Темный фон
-            self.debug_info_window = Entity(parent=camera.ui, model="quad", color=color.rgba(10, 10, 10, 200) if show_hud else self.hideHUD(),
+            self.debug_info_window = Entity(parent=camera.ui, model=Quad(radius=.03), color=color.rgba(10, 10, 10, 200) if show_hud else self.hideHUD(),
                                             origin=(-.5, .5),
-                                            position=Vec2(window.top_left.x + 0.02, window.top_left.y - 0.073),
-                                            scale=Vec2(0.4, 0.4))
+                                            position=Vec2(window.top_left.x + 0.02, window.top_left.y - 0.09),
+                                            scale=Vec2(0.3, 0.35))
             # Текст на фоне
             self.debug_text = Text(parent=camera.ui, text="null", color=color_orange if show_hud else self.hideHUD(), origin=(-.5, .5),
-                                   position=(window.top_left.x + 0.03, window.top_left.y - 0.08, -0.003))
+                                   position=(window.top_left.x + 0.03, window.top_left.y - 0.095, -0.003))
             # подсказка для управления камеры
-            Text(parent=camera.ui, text="Q - Up\nE - Down\n\nRMB(Hold) - Rotate camera\n\nW A S D - Move\nESC - Quit",
+            Text(parent=camera.ui, text="Q - Up\nE - Down\n\nW A S D - Move\nX - Quit",
                  color=color_orange if show_hud else self.hideHUD(), origin=(-.5, -.5),
                  position=(window.bottom_left.x + .03, window.bottom_left.y + .03),
                  background=show_hud)
@@ -323,6 +325,9 @@ class Player(Entity):
         self.wp_index = 0
         self.last_waypoint = False
         self.mouse_conrol = True
+        self.wp_wnd = None
+        self.panel_opened = False
+        self.last_seen_enemy = None
 
         if pause:
             self.pause_menu.enable()
@@ -343,8 +348,9 @@ class Player(Entity):
             invoke(self.show_custom_dialogue,"tutorial_info","info",delay=0.01)
             my_json.change_key("assets/options", "first_launch", False)
 
-        invoke(enable_pda_in_pause,True,delay=0.0001)
+        invoke(enable_pda_in_pause,False,delay=0.0001)
         invoke(self.weapon.update_weapons,delay=0.001)
+        #self.pause_menu.pda_window.add_marker("village_marker")
 
     def show_custom_dialogue(self, id, name):
         self.dialogue.start_dialogue(id)
@@ -361,10 +367,16 @@ class Player(Entity):
         loading_icon = Animation("assets/ui/rads", fps=12, origin=(.5, 0), x=-.1,
                                  always_on_top=True,
                                  parent=camera.ui, scale=0.03)
+        for actors in get_current_level().npc_data:
+            destroy(actors)
+
+        for enemies in get_current_level().hostile_data:
+            destroy(enemies)
         # удаляем текущий уровень
         destroy(get_current_level())
         # загружаем новый по айди из ключа "уровень"
         set_current_level(level)
+        invoke(callbacks.on_level_loaded,delay=0.001)
         self.transition_trigger = None
         self.at_marker_pos = True
         self.mouse_conrol = True
@@ -425,6 +437,11 @@ class Player(Entity):
             self.health -= value
             self.update_healthbar()
             self.hit_sound.play()
+
+            self.hit_indicator_l.color = color.white
+            self.hit_indicator_r.color = color.white
+            invoke(hide_rad_indicators, delay=.7)
+            invoke(hide_rad_indicators, delay=.7)
             if self.radiation_on_level:
                 self.hit_indicator_l.color = color.white
                 self.hit_indicator_r.color = color.white
@@ -450,6 +467,9 @@ class Player(Entity):
     def set_radiation(self,value):
         self.radiation = value
 
+    def wp_mode(self,bool):
+        self.waypoint_mode = bool
+
     def set_player_pos(self,x,y,z):
         self.position = (x,y,z)
 
@@ -472,6 +492,24 @@ class Player(Entity):
     def update_radbar(self):
         self.rad_bar.scale_x = clamp(.22 * self.radiation_timer / 20, 0, .22)
 
+    # Считывание попадания после выстрела с оружия
+    def shoot_hit(self,damage):
+        origin = self.position + (self.down * 0.04)
+        # Пускаем луч
+        self.shoot_ray = raycast(origin, self.direction, ignore=(self,), distance=50,debug=False)
+        # Если ударились об препятствие
+        if self.shoot_ray.hit:
+            def getHitData():
+                return self.shoot_ray.entity
+            # Если есть энтити объект и он не пустой
+            if getHitData() and getHitData() is not None and getHitData().name != "level_object" and \
+                    getHitData().name != "pito_actor":
+                root = getHitData().root
+                if getHitData().id == "enemy":
+                    root.hit(damage)
+                    self.raycast_once()
+                    #print("Shoot at hostile ["+str(root.keys["profile"])+"]\nHP: "+str(root.health)+"\nDamage: "+str(root.damage)+" with damage from player ("+str(round(damage,1))+")")
+
     # функция отслеживания нажатий
     def input(self, key):
         global gameplay
@@ -479,20 +517,32 @@ class Player(Entity):
 
         if not pause and not self.dialogue.enabled and not self.loot.enabled and not self.waypoints:
             # >> Стрельба
-            if key == "left mouse down" and self.weapon.current_weapon:
+            if key == "left mouse down" and self.weapon.current_weapon and not self.panel_opened:
                 if self.weapon.current_weapon.clip > 0:
                     invoke(self.weapon.shoot,delay=self.weapon.current_weapon.speed)
                 else:
                     self.weapon.empty_sound.play()
 
-            if key == "right mouse down":
+            if setting.developer_mode and key == "p":
+                self.wp_mode(not self.waypoint_mode)
+                print("Waypoint mode has been switched to "+str(self.waypoint_mode)+"!")
+
+            if setting.developer_mode and self.waypoint_mode:
+                if key == "n" and self.wp_wnd is None:
+                    self.wp_wnd = ui.WaypointWindow()
+                    print(camera.ui)
+                    self.mouse_conrol = False
+                    mouse.locked = False
+
+
+            if key == "right mouse down" and not self.panel_opened:
                 if self.weapon.current_weapon and "scope" in self.weapon.current_weapon.data:
                     camera.fov = lerp(self.original_fov, self.weapon.current_weapon.data["scope"]["fov"],1)
                     self.scope = Sprite(ui_folder + "scope.png", parent=camera.ui, origin=(0, 0), scale=.4,
                                  position=(0, 0,-1))
                     self.cursor.color = color.clear
                     #self.crosshair_tip.color = color.clear
-            elif key == "right mouse up":
+            elif key == "right mouse up" and not self.panel_opened:
                 camera.fov = self.original_fov
                 if self.scope:
                     self.cursor.color = color.white
@@ -500,7 +550,7 @@ class Player(Entity):
                     #self.crosshair_tip.color = color_orange
 
             # >> Перезарядка
-            if key == "r" and self.weapon.current_weapon:
+            if key == "r" and self.weapon.current_weapon and not self.panel_opened:
                 self.weapon.reload_weapon()
 
             # Если кнопка С нажата и в режиме разработчика, то копируем нашу позицию в буфер
@@ -509,19 +559,22 @@ class Player(Entity):
                 #self.hit(15)
                 #self.quests.get_quest("quest_rusty_1").complete()
 
-            if key == "1" and self.weapon.pistol:
+            if key == "1" and self.weapon.pistol and not self.panel_opened:
                 if self.weapon.current_weapon and self.weapon.current_weapon.id == self.weapon.pistol.id:
                     self.weapon.hide_weapon()
                 if self.weapon.current_weapon and self.weapon.current_weapon.id != self.weapon.pistol.id or self.weapon.current_weapon is None:
                     self.weapon.hide_weapon()
                     self.weapon.draw_weapon("pistol")
 
-            if key == "2" and self.weapon.rifle:
+            if key == "2" and self.weapon.rifle and not self.panel_opened:
                 if self.weapon.current_weapon and self.weapon.current_weapon.id == self.weapon.rifle.id:
                     self.weapon.hide_weapon()
                 if self.weapon.current_weapon and self.weapon.current_weapon.id != self.weapon.rifle.id or self.weapon.current_weapon is None:
                     self.weapon.hide_weapon()
                     self.weapon.draw_weapon("rifle")
+
+            if key == "3":
+                print("EVENTS KEYS LIST:\n"+str(self.event_keys))
 
             # если луч столкнулся с объектом
             if self.ray_hit.hit:
@@ -720,6 +773,17 @@ class Player(Entity):
                 if self.ray_hit.hit:
                     return self.ray_hit.entity
 
+            def updateCrosshair():
+                if self.weapon.current_weapon:
+                    self.cursor.texture = "assets/ui/crosshair_weapon.png"
+                    self.cursor.color = color.white
+                    self.cursor.scale = .06
+                else:
+                    self.cursor.texture = "assets/ui/crosshair.png"
+                    self.cursor.color = color.white
+                    self.cursor.scale = .04
+                clearCrosshairText()
+
                 # РЭЙКАСТИНГ, ВЗАИМОДЕЙСТВИЕ С МИРОМ
             if self.ray_hit.hit:
                 if getHitData() is not None:
@@ -746,18 +810,29 @@ class Player(Entity):
                     if getHitData().id == "npc":
                         setCrosshairTip(getHitData().profile["name"])
 
+                    if getHitData().id == "enemy":
+                        self.last_seen_enemy = getHitData().root
+                        self.cursor.texture = "assets/ui/crosshair_weapon.png"
+                        self.cursor.color = color.red
+                        self.cursor.scale = .06
+                        self.last_seen_enemy.player_look(True)
+
                     if getHitData().id == "" or getHitData().id is None:
-                        clearCrosshairText()
+                        updateCrosshair()
+
+                    #if getHitData().name == "level_object":
+                    #    updateCrosshair()
+
+                else:
+                    self.cursor.color = color.white
             else:
                 if setting.developer_mode:
                     self.hit_text = "None"
-                if self.weapon.current_weapon:
-                    self.cursor.texture = "assets/ui/crosshair_weapon.png"
-                    self.cursor.scale = .06
-                else:
-                    self.cursor.texture = "assets/ui/crosshair.png"
-                    self.cursor.scale = .04
+                updateCrosshair()
                 clearCrosshairText()
+                if self.last_seen_enemy is not None:
+                    self.last_seen_enemy.player_look(False)
+                    self.last_seen_enemy = None
 
             # если в режиме разработчика, то включаем полёт персонажа и вывод инфы
             if setting.developer_mode:
@@ -864,6 +939,7 @@ class Level(Entity):
         self.level_objects = []
         self.spawn_point = None
         self.npc_data = []
+        self.hostile_data = []
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -910,10 +986,7 @@ class Level(Entity):
                 if "id" in obj:
                     # Присваиваем начальную позицию гг, равную позиции спавн точки
                     if obj["id"] == "spawn_point":
-                        print("OLD POS: "+str(get_player().position))
-                        print("SP: "+str(obj["position"]))
                         get_player().position = obj["position"]
-                        print("NEW POS: " + str(get_player().position))
                         self.spawn_point = obj
 
                     if obj["id"] == "animation":
@@ -948,6 +1021,29 @@ class Level(Entity):
 
                             lvl_npc.setLight(lvl_npc.attachNewNode(_light))
 
+                    if obj["id"] == "enemy":
+                        lvl_enemy = PitoHostile(obj["profile"],obj["state"] if "state" in obj else "ignore")
+                        lvl_enemy.position = obj["position"]
+                        lvl_enemy.rotation = obj["rotation"]
+                        lvl_enemy.id = obj["id"]
+                        lvl_enemy.keys = obj
+                        if "collider" in obj:
+                            lvl_enemy.collider = BoxCollider(lvl_enemy,center=obj["collider"]["pos"],
+                                                           size=obj["collider"]["size"])
+                        self.hostile_data.append(lvl_enemy)
+
+                        if "shader" in obj and obj["shader"]:
+                            lvl_enemy.shader = colored_lights_shader
+
+                        if "ambient" in obj:
+                            _light = PandaAmbientLight('ambient_light')
+                            for l in level_data["light"]:
+                                if "id" in l and l["id"] == obj["ambient"]:
+                                    _light.setColor(color.rgba(l["color"][0], l["color"][1], l["color"][2], 1))
+                                    break
+
+                            lvl_enemy.setLight(lvl_npc.attachNewNode(_light))
+
                 # Cоздаём объект
                 lvl_obj = LevelObject(parent=self, model=obj["model"] if "model" in obj else "cube",
                                       texture=obj["texture"] if "texture" in obj else None,
@@ -960,7 +1056,7 @@ class Level(Entity):
                                       color=color.rgba(obj["color"][0],
                                                        obj["color"][1],
                                                        obj["color"][2],
-                                                       obj["color"][3]) if "color" in obj and setting.developer_mode or "color" in obj and "id" in obj and setting.developer_mode else color.white if "id" not in obj else color.clear,
+                                                       obj["color"][3]) if "color" in obj and setting.developer_mode or "color" in obj and "id" in obj and setting.developer_mode else color.white if "id" not in obj else color.clear if "invisible" in obj and obj["invisible"] else color.clear,
                                       id=obj["id"] if "id" in obj else None)
 
                 if "shader" in obj and obj["shader"]:
@@ -1111,9 +1207,8 @@ class GamePause(Entity):
                 if self.selected_element == 2:
                     invoke(self.journal_window.enable, delay=0.001)
                     self.journal_window.root_window = self
-
-                    self.disable()
                     self.journal_window.journal_update()
+                    self.disable()
 
                 # PDA
                 if self.selected_element == 3:

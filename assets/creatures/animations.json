@@ -4,5 +4,16 @@
   "idle_cross": "assets/models/anim/pito_npc-idle_cross",
   "idle_weapon": "assets/models/anim/pito_npc-idle_weapon",
   "idle_sit": "assets/models/anim/pito_npc-idle_sit",
-  "idle_sit_ground": "assets/models/anim/pito_npc-idle_sit_ground"
+  "idle_sit_ground": "assets/models/anim/pito_npc-idle_sit_ground",
+  "shoot_forward": "assets/models/anim/pito_npc-shoot_forward",
+  "shoot_up": "assets/models/anim/pito_npc-shoot_from_down",
+  "hide_down": "assets/models/anim/pito_npc-hide_from_up",
+  "shoot_left": "assets/models/anim/pito_npc-shoot_from_left",
+  "hide_left": "assets/models/anim/pito_npc-hide_from_left",
+  "shoot_right": "assets/models/anim/pito_npc-shoot_from_right",
+  "hide_right": "assets/models/anim/pito_npc-hide_from_right",
+  "death_left":"assets/models/anim/pito_npc-death_left",
+  "death_right":"assets/models/anim/pito_npc-death_right",
+  "death_front":"assets/models/anim/pito_npc-death_front",
+  "death_front_new":"assets/models/anim/pito_npc-death_front_realistic"
 }

@@ -1,6 +1,6 @@
 {
-  "start_money": 100,
-  "start_max_hp": 100.0,
+  "start_money": 0,
+  "start_max_hp": 50.0,
   "start_items": ["w_pistol"],
   "use_items_after_start": ["w_pistol"],
   "start_quests": ["quest_find_cap"],

@@ -89,16 +89,24 @@ class WeaponSystem():
                 else:
                     self.current_weapon.clip -= 1
             self.current_weapon.shoot_sound.play()
-            invoke(self.change_cam_rot,rot_minus=1,left=1,delay=0)
-            invoke(self.change_cam_rot, rot_plus=1,right=1, delay=0.1)
+
+            #invoke(self.change_cam_rot,rot_minus=1,left=1,delay=0)
+            #invoke(self.change_cam_rot, rot_plus=1,right=1, delay=0.1)
+            # Отдача
+            old_w_pos = camera.world_position
+            camera.shake(duration=0.2)
+
             game.get_player().shoot_sparkle.enable()
             game.get_player().shoot_sparkle.position = (
                 self.current_weapon.data["sparkle_position"][0],
                 self.current_weapon.data["sparkle_position"][1],
             0.002)
-            invoke(self.disable_sparkle, delay=0.1)
+            invoke(self.disable_sparkle, delay=0.25)
+            #setattr(camera,"world_position",old_w_pos)
+
             #print("speed is {0}".format(self.current_weapon.speed))
             self.update_ammo()
+            game.get_player().shoot_hit(self.current_weapon.damage)
 
     def disable_sparkle(self):
         game.get_player().shoot_sparkle.enabled = False

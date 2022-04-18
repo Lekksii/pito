@@ -27,7 +27,7 @@
     "name": "itm.af.sparkle.name",
     "caption": "itm.af.sparkle.caption",
     "icon": "assets/ui/items/art_sparkle.png",
-    "price": 300,
+    "price": 450,
     "slot": "belt",
     "type": "equipment",
     "on_use": {"max_hp": 15.0}
@@ -45,7 +45,7 @@
     "name": "itm.af.fireball.name",
     "caption": "itm.af.fireball.caption",
     "icon": "assets/ui/items/af_fireball.png",
-    "price": 350,
+    "price": 500,
     "slot": "belt",
     "type": "equipment",
     "on_use": {"max_hp": 30.0}
@@ -54,7 +54,7 @@
     "name": "itm.af.crystal.name",
     "caption": "itm.af.crystal.caption",
     "icon": "assets/ui/items/af_crystal.png",
-    "price": 500,
+    "price": 750,
     "slot": "belt",
     "type": "equipment",
     "on_use": {"max_hp": 10.0}
@@ -63,7 +63,7 @@
     "name": "itm.af.dummy.name",
     "caption": "itm.af.dummy.caption",
     "icon": "assets/ui/items/af_dummy.png",
-    "price": 450,
+    "price": 500,
     "slot": "belt",
     "type": "equipment",
     "on_use": {"max_hp": 20.0}
@@ -72,7 +72,7 @@
     "name": "itm.af.medusa.name",
     "caption": "itm.af.medusa.caption",
     "icon": "assets/ui/items/af_medusa.png",
-    "price": 375,
+    "price": 400,
     "slot": "belt",
     "type": "equipment",
     "on_use": {"max_hp": 5.0}
@@ -81,7 +81,7 @@
     "name": "itm.af.battery.name",
     "caption": "itm.af.battery.caption",
     "icon": "assets/ui/items/af_battery.png",
-    "price": 650,
+    "price": 800,
     "slot": "belt",
     "type": "equipment",
     "on_use": {"max_hp": 25.0}
@@ -197,5 +197,14 @@
     "icon": "assets/ui/items/ammo_oc.png",
     "price": 200,
     "type": "item"
+  },
+  "radio_first": {
+    "name": "itm.radio.name",
+    "caption": "itm.radio.caption",
+    "icon": "assets/ui/items/pda.png",
+    "price": 0,
+    "type": "usable",
+    "dialogue": {"id": "no_dialogue", "name": "npc.radio"},
+    "on_use": {}
   }
 }

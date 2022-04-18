@@ -1,0 +1,34 @@
+{
+  "stalker": {
+    "weapons": ["w_ak","w_groza"],
+    "model": "anim/pito_npc",
+    "texture": ["pstalker"],
+    "damage": [1.5,4.0],
+    "health": [10,15],
+    "attack_delay": [2,5]
+  },
+  "bandit": {
+    "weapons": ["w_ak"],
+    "model": "anim/pito_npc",
+    "texture": ["pbandit","pbandit_noglass"],
+    "damage": [1.0,3.5],
+    "health": [5,10],
+    "attack_delay": [3,5]
+  },
+  "soldier": {
+    "weapons": ["w_ak","w_groza"],
+    "model": "anim/pito_npc",
+    "texture": ["psoldier"],
+    "damage": [2.5,4.5],
+    "health": [15,25],
+    "attack_delay": [2,4]
+  },
+  "mercenary": {
+    "weapons": ["w_groza","w_lr300"],
+    "model": "anim/pito_npc",
+    "texture": ["pkiller"],
+    "damage": [1.5,5.0],
+    "health": [20,30],
+    "attack_delay": [1,3]
+  }
+}
