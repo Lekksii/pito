@@ -6,7 +6,7 @@
 ✅ Location system <br>
 ✅ Player <br>
 ✅ Camera control <br>
-✅ Reading data from JSON <br>
+✅ Reading data from JSON (Quests, Dialogues, Multilanguage, Waypoints, Levels, Items etc.) <br>
 ✅ Transitions between locations <br>
 ✅ Interacting with the environment (loot, NPC interract)<br>
 ✅ Quest system <br>
@@ -18,11 +18,10 @@
 ✅ World map in PDA (WIP) <br>
 ✅ Weapon system, shooting <br>
 ✅ Trade system<br>
+✅ Simple AI, enemies <br>
 
 #### TODO LIST:
 🔄 Character system (primitive leveling, exp) <br>
-🔄 Simple AI, enemies <br>
-🔄 (-?) Level Editor <br>
 🔄 Save system <br>
 
 #### BUGS:
