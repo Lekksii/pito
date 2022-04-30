@@ -28,6 +28,14 @@
 - GUI problems at 1366x768 <br>
 - Item displacement in inventory slots on 1366x768 <br>
 
+#### GEAR:
+– **Panda 3D** _1.10.9_ <br>
+– **Ursina Engine** _4.1.1_ based on **Panda 3D** _1.10.9_ <br>
+– **Json** <br>
+– **Tkinter** <br>
+– **Python 3.8** <br>
+– **Pyperclip** <br>
+
 ## SCREENSHOTS
 ![telegram-cloud-photo-size-2-5199746936687669717-y](https://user-images.githubusercontent.com/64277255/154757412-4a1f3da6-0861-4a23-a3fc-83d7232b2237.jpg)
 ![telegram-cloud-photo-size-2-5199746936687669718-y](https://user-images.githubusercontent.com/64277255/154757421-8615de23-1991-49a4-82b8-58579240e220.jpg)
