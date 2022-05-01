@@ -1,4 +1,5 @@
 import game
+from ursina import *
 import ui
 import my_json
 from language_system import TKey
@@ -43,10 +44,12 @@ def dead_enemies(val):
 # Callback if enemy was killed
 # (arg: obj - PitoHostile class object, that contains all enemy data)
 def npc_death(obj = None):
+    # Forest road mission
     if dead_enemies(0) and check_level("forest_road"):
         story.forest_road_quest()
+    # Intro level bandits
     elif dead_enemies(0) and check_level("intro_battle"):
-        ui.MessageBox(TKey("inv.info"),TKey("msgbox.first_battle.text"))
+        invoke(ui.MessageBox,TKey("inv.info"),TKey("msgbox.first_battle.text"),delay=1)
         story.first_battle()
     else:
         print("Enemies on level: {0}".format(str(len(game.get_current_level().hostile_data))))
@@ -64,5 +67,18 @@ def player_on_hit(player = None, obj = None):
 
 # Callback if level loaded
 def on_level_loaded():
+    if game.get_current_level().hostile_data:
+        for enemies in game.get_current_level().hostile_data:
+            enemies.on_level_loaded = True
+
     if check_level("village"):
         story.first_in_village()
+        print("FIRST IN VILLAGE")
+
+# Callback if gameplay started
+def on_game_started():
+    pass
+
+# Callback when quest added
+def on_quest_add(quest):
+    pass
