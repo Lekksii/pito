@@ -120,6 +120,7 @@ class PDA(Entity):
         m = Marker("assets/ui/pda/" + marker_data[id]["spot"], marker_data[id]["position"],
                 marker_data[id]["level_id"], marker_data[id]["name"], parent=self.map_container, scale=0.019)
         self.markers.append(m)
+        game.show_pda_icon_ui(True)
 
     def input(self,key):
         if self.enabled:
