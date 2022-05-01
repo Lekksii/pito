@@ -6,7 +6,7 @@
 ✅ Location system <br>
 ✅ Player <br>
 ✅ Camera control <br>
-✅ Reading data from JSON <br>
+✅ Reading data from JSON (Quests, Dialogues, Multilanguage, Waypoints, Levels, Items etc.) <br>
 ✅ Transitions between locations <br>
 ✅ Interacting with the environment (loot, NPC interract)<br>
 ✅ Quest system <br>
@@ -18,16 +18,23 @@
 ✅ World map in PDA (WIP) <br>
 ✅ Weapon system, shooting <br>
 ✅ Trade system<br>
+✅ Simple AI, enemies <br>
 
 #### TODO LIST:
 🔄 Character system (primitive leveling, exp) <br>
-🔄 Simple AI, enemies <br>
-🔄 (-?) Level Editor <br>
 🔄 Save system <br>
 
 #### BUGS:
 - GUI problems at 1366x768 <br>
 - Item displacement in inventory slots on 1366x768 <br>
+
+#### GEAR:
+– **Panda 3D** _1.10.9_ <br>
+– **Ursina Engine** _4.1.1_ based on **Panda 3D** _1.10.9_ <br>
+– **Json** <br>
+– **Tkinter** <br>
+– **Python 3.8** <br>
+– **Pyperclip** <br>
 
 ## SCREENSHOTS
 ![telegram-cloud-photo-size-2-5199746936687669717-y](https://user-images.githubusercontent.com/64277255/154757412-4a1f3da6-0861-4a23-a3fc-83d7232b2237.jpg)
