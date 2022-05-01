@@ -114,6 +114,7 @@ class PitoHostile(Entity):
         self.anims = my_json.read("assets/creatures/animations")
         self.player_look_at_me = False
         self.dead = False
+        self.on_level_loaded = False
         self.state_machine_run = False
         self.current_animation = None
         self.sequence = Sequence()
@@ -253,7 +254,7 @@ class PitoHostile(Entity):
             self.sequence = None
             #print("SEQUENCE: Killed!")
 
-        if self.health > 0 and not self.dead:
+        if self.health > 0 and not self.dead and self.on_level_loaded:
             def anim_seq():
                 self.sequence.append(Func(self.actor.play, self.attack_states[self.attack_state][0]))
                 #self.sequence.append(Func(print, self.attack_states[self.attack_state][0]))
