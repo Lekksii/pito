@@ -94,6 +94,13 @@ def copy_to_clipboard(string):
     pyperclip.copy(string)
 
 
+def show_pda_icon_ui(bool):
+    if bool:
+        get_player().pda_icon.enable()
+        get_player().pda_icon.blink(duration=3,loop=True)
+    else:
+        get_player().pda_icon.disable()
+
 # что-то типа инфопоршней из оригинальной трилогии сталкера
 def add_e_key(key_id):
     get_player().event_keys.append(key_id)
@@ -260,7 +267,15 @@ class Player(Entity):
         self.press_f = ui.UIText(TKey("press")+" [F]", parent=camera.ui,offset=(0.0018,0.0018), y=-0.35, enabled=False,
                                  color=color.white,origin=(0,0))
 
-        self.fps_counter = ui.UIText("fps", (0.0018, 0.0018), color=color_orange,
+        self.pda_icon = Sprite(ui_folder+"items/pda.png",
+                                    position=(window.left.x+0.045,
+                                              window.top.y-0.125,
+                                              0.001),
+                                    scale=0.35,
+                                    parent=camera.ui,origin=(0,0),color=self.hideHUD(),enabled=False)
+        #self.pda_icon.blink(duration=3,loop=True)
+
+        self.fps_counter = ui.UIText("", (0.0018, 0.0018), color=color_orange,
                                      position=(window.right.x - 0.13, window.top.y - .1))
         # >> сообщение сбоку экрана
         self.msg = ui.UIText("", origin=(-.5, 0),offset=(0.0015, 0.0015), parent=camera.ui,
@@ -1213,6 +1228,8 @@ class GamePause(Entity):
                 # PDA
                 if self.selected_element == 3:
                     if self.pda_enabled:
+                        if get_player().pda_icon.enabled:
+                            show_pda_icon_ui(False)
                         invoke(self.pda_window.enable, delay=0.001)
                         self.pda_window.root_window = self
                         self.pda_window.update_markers()
