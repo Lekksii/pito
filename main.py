@@ -75,9 +75,9 @@ if __name__ == "__main__":
     application.development_mode = False
 
     # НАЧИНАЕМ ИГРУ С ГЛАВНОГО МЕНЮ
-    scene = main_menu.MainMenu()
+    #scene = main_menu.MainMenu()
 
-    #scene = Gameplay()
+    scene = Gameplay()
 
     #scene = LevelEditor("garbage_camp")
 
