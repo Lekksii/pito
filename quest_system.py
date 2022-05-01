@@ -1,6 +1,7 @@
 from ursina import *
 import my_json
 import game
+import callbacks
 import pda
 from language_system import TKey
 
@@ -21,9 +22,14 @@ class Quests():
                 self.quests_list.append (
                     quest_element (q["id"], q["title"], q["description"], q["quest_items"],
                                    q["reward"],q["pda"] if "pda" in q else None))
+                if "pda" in q:
+                    invoke(game.enable_pda_in_pause, True, delay=0.0001)
+                    invoke(game.show_pda_icon_ui, True, delay=0.0001)
                 break
+
         invoke(game.show_message,TKey ("message.new.quest"), 5,delay=0.001)
-        invoke(game.enable_pda_in_pause,True,delay=0.0001)
+
+        invoke(callbacks.on_quest_add,self)
 
     def has_quest(self,quest_id):
         for q in self.quests_list:
