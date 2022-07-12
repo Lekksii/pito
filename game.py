@@ -1,9 +1,8 @@
 from ursina import *
 from ursina import curve
+from panda3d.core import *
 from ursina.shaders import *
-from ursina.shaders import ssao_shader
 from pito_light import *
-from direct.filter.CommonFilters import CommonFilters
 from panda3d.core import loadPrcFileData
 import panda3d.core
 from inventory_system import Inventory
@@ -24,7 +23,9 @@ import my_json
 import bug_trap
 import main_menu
 import ui
+import story
 from actor import *
+import cmd
 
 # ИНИЦИАЛИЗАЦИЯ
 # объявлям папки с ассетами и доп файлы
@@ -126,8 +127,22 @@ def enable_pda_in_pause(b):
 
     get_player().pause_menu.pda_enabled = b
 
+def spawn_npc(profile_id, pos, rot):
+    npc = PitoActor(profile_id)
+    npc.id = "npc"
+    npc.position = pos
+    npc.rotation = rot
+    get_current_level().npc_data.append(npc)
 
-def show_message(txt, life_time):
+def spawn_enemy(enemy_profile, pos, rot, state):
+    enemy = PitoHostile(enemy_profile, state)
+    enemy.id = "enemy"
+    enemy.position = pos
+    enemy.rotation = rot
+    get_current_level().hostile_data.append(enemy)
+    enemy.on_level_loaded = True
+
+def show_message(txt, life_time=5):
     get_player().msg.setText("")
     get_player().msg.setText(txt)
     invoke(get_player().msg.setText, "", delay=life_time)
@@ -167,14 +182,17 @@ class Player(Entity):
         # мышь зафиксирована или нет
         mouse.locked = setting.cursor_lock
         #loadPrcFileData('','coordinate-system z-up-right')
-        self.filters = CommonFilters(application.base.win,application.base.cam)
+        #self.filters = CommonFilters(application.base.win,application.base.cam)
         #self.sun = DirectionalLight()
         #self.filters.set_half_pixel_shift()
         #loadPrcFileData('', 'coordinate-system y-up-left')
-        #camera.shader = camera_grayscale_shader
-        #camera.set_shader_input("c_R", 0.93)
-        #camera.set_shader_input("c_G", 0.95)
-        #camera.set_shader_input("c_B", 1.05)
+        #camera.shader = fxaa_shader
+
+        camera.shader = oblivion_postprocessing
+        camera.set_shader_input("alpha",0.3)
+        camera.set_shader_input("blur_size", 0.03)
+        camera.set_shader_input("horizontal", True)
+        camera.set_shader_input("pixel_size",0)
         #print(window.getConfigProperties())
 
 
@@ -203,8 +221,12 @@ class Player(Entity):
                                debug=False)
         # -----INTERFACE----------------
 
-        self.frame_game = Sprite(ui_folder + "fr_game_1.png", parent=camera.ui, origin=(-.5, .5), scale=.445,
-                                 position=(window.left.x - 0.002, window.top.y), color=self.hideHUD())
+        self.frame_game_left = Sprite(ui_folder + "fr_game_left.png", parent=camera.ui, origin=(-.5, .5), scale=.445,
+                                 position=(window.left.x, window.top.y), color=self.hideHUD())
+        self.frame_game_center = Sprite(ui_folder + "fr_game_center.png", parent=camera.ui, origin=(0, .5), scale=.445,
+                                      position=(0, window.top.y), color=self.hideHUD())
+        self.frame_game_right = Sprite(ui_folder + "fr_game_right.png", parent=camera.ui, origin=(.5, .5), scale=.445,
+                                      position=(window.right.x, window.top.y), color=self.hideHUD())
 
         # фон полоски здоровья
         self.health_bar_gui = Sprite(ui_folder + "hp_ui.png", parent=camera.ui, origin=(-.5, .5),
@@ -307,7 +329,40 @@ class Player(Entity):
                  color=color_orange if show_hud else self.hideHUD(), origin=(-.5, -.5),
                  position=(window.bottom_left.x + .03, window.bottom_left.y + .03),
                  background=show_hud)
+### FLASHLIGHT
+#        self.FlashlightNode = NodePath('Flashlight Node')
+#        self.FlashlightNode.reparentTo(camera)
 
+#        self.FlashlightLens = PerspectiveLens()
+#        self.FlashlightLens.setFov(25)
+
+        #self.Flashlight = PitoSpotLight()
+        #self.Flashlight._light.setLens(self.FlashlightLens)
+#        self.flashlight = PitoSpotLight(shadows=True,
+#                                        color=color.rgba(255, 255, 255, 1),
+#                                        position=(0, 0, 0),
+#                                        rotation=camera.rotation,
+#                                        distance=0.01,
+#                                        parent=camera,
+#                                        lens=self.FlashlightLens,
+#                                        name="flashlight",
+#                                        enabled=False)
+
+#        self.FlashlightNodePath = self.FlashlightNode.attachNewNode(self.flashlight._light)
+
+#        self.proj = render.attachNewNode(LensNode('proj'))
+#        self.proj.node().setLens(self.FlashlightLens)
+
+#        self.proj.reparentTo(self.FlashlightNode)
+
+#        self.tex = application.base.loader.loadTexture('assets/textures/flashlight.png')
+#        self.tex.setWrapU(SamplerState.WMClamp)
+#        self.tex.setWrapV(SamplerState.WMClamp)
+#        #self.tex.setBorderColor((1,1,1,0))
+#        self.ts = TextureStage('ts')
+#
+#        render.projectTexture(self.ts, self.tex, self.proj)
+#
         # ПАРАМЕТРЫ ИГРОКА
         self.health = player_creature["start_max_hp"]
         self.health_max = player_creature["start_max_hp"]
@@ -365,6 +420,11 @@ class Player(Entity):
 
         invoke(enable_pda_in_pause,False,delay=0.0001)
         invoke(self.weapon.update_weapons,delay=0.001)
+        #invoke(self.get_lvl_data,delay=1)
+
+    def get_lvl_data(self):
+        print(get_current_level().level_objects[0].keys)
+
         #self.pause_menu.pda_window.add_marker("village_marker")
 
     def show_custom_dialogue(self, id, name):
@@ -390,8 +450,8 @@ class Player(Entity):
         # удаляем текущий уровень
         destroy(get_current_level())
         # загружаем новый по айди из ключа "уровень"
-        set_current_level(level)
-        invoke(callbacks.on_level_loaded,delay=0.001)
+        invoke(set_current_level,level,delay=2)
+        invoke(callbacks.on_level_loaded,delay=2)
         self.transition_trigger = None
         self.at_marker_pos = True
         self.mouse_conrol = True
@@ -569,10 +629,12 @@ class Player(Entity):
                 self.weapon.reload_weapon()
 
             # Если кнопка С нажата и в режиме разработчика, то копируем нашу позицию в буфер
-            if key == "c" and not setting.developer_mode:
-                pass
+            if key == "c":
+                #spawn_npc("galosh_profile",(0,0,0),(0,0,0))
+                #spawn_enemy("mercenary",(0,0,0),(0,0,0),"attack_from_down")
                 #self.hit(15)
                 #self.quests.get_quest("quest_rusty_1").complete()
+                story.show_intro_text()
 
             if key == "1" and self.weapon.pistol and not self.panel_opened:
                 if self.weapon.current_weapon and self.weapon.current_weapon.id == self.weapon.pistol.id:
@@ -917,8 +979,8 @@ class Player(Entity):
                     self.crosshair_tip.setText(self.crosshair_tip_text)
 
 # Главный класс игрового процесса
-class Gameplay():
-    def __init__(self, **kwargs):
+class Gameplay(Entity):
+    def __init__(self,level=None, **kwargs):
         super().__init__()
         # Глобальные переменные для изменения
         global gameplay
@@ -929,7 +991,8 @@ class Gameplay():
         self.player = Player()
         # переменная с ссылкой на класс уровня (спауним уровень)
         # передаём ссылку с созданным гг в уровень для дальнейшего доступа к классу гг
-        self.current_level = Level(self.player, level_id=player_creature["start_level"])
+        #invoke(self.player.load_location,player_creature["start_level"] if level is None else level,delay=0.00001)
+        self.current_level = Level(self.player, level_id=player_creature["start_level"] if level is None else level)
         # игровой процесс запущен
         gameplay = True
 
@@ -960,7 +1023,6 @@ class Level(Entity):
             setattr(self, key, value)
 
         # DirectionalLight (parent=Entity(), y=35, rotation=(45,0,0), shadows=True)
-
         # Если мы начали игру
         if os.path.isdir("assets/levels/" + str(self.level_id)):
             level_data = my_json.read("assets/levels/" + str(self.level_id) + "/level")
@@ -989,12 +1051,18 @@ class Level(Entity):
                 if "light" in level_data:
                     for light in level_data["light"]:
                         if light["type"] == "point":
-                            PitoPointLight(shadows=light["shadows"],
+                            l = PitoPointLight(shadows=light["shadows"],
                                        colour=color.rgba(light["color"][0],light["color"][1],light["color"][2],.1),
                                        position=light["position"],
                                        rotation=light["rotation"],
                                        distance=light["distance"],
-                                       parent=self)
+                                       parent=self,
+                                       name=light["name"] if "name" in light else "pito_light")
+                            l.keys = light
+                            if "animation" in light:
+                                if light["animation"] == "fire":
+                                    pass
+                            self.level_objects.append(l)
                             break
 
                 # если в объекте уровня есть ключ ID и его параметр spawn_point
@@ -1064,8 +1132,7 @@ class Level(Entity):
                                       texture=obj["texture"] if "texture" in obj else None,
                                       rotation=obj["rotation"] if "rotation" in obj else (0,0,0),
                                       position=obj["position"] if "position" in obj else (0,0,0),
-                                      filtering=None,
-                                      collider=obj["collider"] if "collider" in obj else None,
+                                      filtering=Texture.default_filtering,
                                       scale=obj["scale"] if "scale" in obj else 1,
                                       double_sided=obj["double_sided"] if "double_sided" in obj else False,
                                       color=color.rgba(obj["color"][0],
@@ -1073,6 +1140,12 @@ class Level(Entity):
                                                        obj["color"][2],
                                                        obj["color"][3]) if "color" in obj and setting.developer_mode or "color" in obj and "id" in obj and setting.developer_mode else color.white if "id" not in obj else color.clear if "invisible" in obj and obj["invisible"] else color.clear,
                                       id=obj["id"] if "id" in obj else None)
+
+                if "collider" in obj and obj["collider"]:
+                    lvl_obj.collider = obj["collider"]
+
+                if "name" in obj and obj["name"]:
+                    lvl_obj.name = obj["name"]
 
                 if "shader" in obj and obj["shader"]:
                     lvl_obj.shader = colored_lights_shader
@@ -1086,7 +1159,7 @@ class Level(Entity):
 
                     lvl_obj.setLight(lvl_obj.attachNewNode(_light))
 
-                scene.fog_density = 0.015
+                scene.fog_density = 0.010
                 scene.fog_color = color.rgb(level_data["weather_color"][0], level_data["weather_color"][1],
                                      level_data["weather_color"][2])
 
@@ -1095,11 +1168,13 @@ class Level(Entity):
 
                 # присваиваем ему все ключи из файла с уровнем
                 lvl_obj.keys = obj
+                #lvl_obj.setShaderAuto()
                 self.level_objects.append(lvl_obj)
-
         else:
             if bug_trap.crash_game_msg("Error","Level assets/levels/\"{0}\" not found!".format(self.level_id),1):
                 application.quit()
+    def update(self):
+        pass
 
 # Класс объекта на уровне
 class LevelObject(Entity):
@@ -1137,7 +1212,7 @@ class GamePause(Entity):
         self.update_colors()
 
         self.parent = camera.ui
-        Entity(parent=self, model="quad", color=rgb(10, 10, 10), scale=window.size)
+        Entity(parent=self, model="quad", color=rgb(2, 2, 0), scale=window.size)
         self.frame = Sprite(ui_folder + "16_9_frame.png", parent=self, scale=0.222,z=-0.001)
 
         Text(TKey("mm.title").upper(), parent=self, y=0.35, x=0, origin=(0, 0))
@@ -1244,8 +1319,10 @@ class GamePause(Entity):
 
                 # Exit
                 if self.selected_element == len(self.menu_punkts) - 1:
-                    scene.clear()
+                    scene.clear() if not scene.isEmpty() else None
+                    destroy(game_session)
                     camera.overlay.color = color.black
+                    pause = False
                     loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
                     loading_icon = Animation("assets/ui/rads", fps=12, origin=(.5, 0), x=-.1,
                                              always_on_top=True,
