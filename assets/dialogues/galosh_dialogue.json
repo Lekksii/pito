@@ -41,7 +41,7 @@
       "answers": [
         {
           "text": "dlg.galosh.4.answer.1",
-          "go_to": "1"
+          "go_to": "close_dialog"
         }
       ]
     },
