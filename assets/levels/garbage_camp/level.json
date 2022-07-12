@@ -1,6 +1,6 @@
 {
   "weather_color": [10, 10, 10],
-  "rotation_range": [-90,25],
+  "rotation_range": [-103,64],
   "light": [
     {
       "type": "point",
@@ -8,25 +8,30 @@
       "rotation": [0, 0, 0],
       "distance": 0.01,
       "shadows": false,
-      "color": [238, 157, 49]
+      "color": [238, 157, 49],
+      "animation": "fire",
+      "name": "campfire_light"
     },
     {
       "id": "npc_shadow_fill",
       "position": [5.92, 2.76, -4.9],
       "rotation": [0, 0, 0],
-      "color": [61, 40, 12]
+      "color": [61, 40, 12],
+      "name": "npc_shadow_fill_light"
     },
     {
       "id": "interior_shadow_fill",
       "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "color": [38, 25, 8]
+      "color": [38, 25, 8],
+      "name": "interior_shadow_fill_light"
     },
     {
       "id": "exterior_shadow_fill",
       "position": [0, 0, 0],
       "rotation": [0, 0, 0],
-      "color": [17, 11, 3]
+      "color": [17, 11, 3],
+      "name": "exterior_shadow_fill_light"
     }
   ],
   "level_data": [
@@ -36,13 +41,14 @@
       "position": [0, 0, 0],
       "rotation": [0, 180, 0],
       "collider": null,
-      "scale": 8
+      "scale": 8,
+      "name": "skybox"
     },
     {
       "le_name": "Spawn Point",
       "id": "spawn_point",
       "model": "sphere",
-      "position": [2.2, 1.8, -6.4],
+      "position": [2.2, 1.8, -5.99],
       "rotation": [0, 0, 0],
       "collider": null,
       "scale": 1,
@@ -64,17 +70,17 @@
       "position": [0, 0, 0],
       "rotation": [0, 180, 0],
       "ambient": "exterior_shadow_fill",
-      "shader": true,
+      "shader": false,
       "collider": null,
       "scale": 1
     },
     {
       "model": "assets/levels/garbage_camp/interior",
-      "texture": "texobj1.png",
+      "texture": "assets/textures/texobj1.png",
       "position": [0, 0, 0],
       "rotation": [0, 180, 0],
       "ambient": "interior_shadow_fill",
-      "shader": true,
+      "shader": false,
       "collider": null,
       "scale": 1
     },
@@ -84,7 +90,7 @@
       "position": [0, 0, 0],
       "rotation": [0, 180, 0],
        "ambient": "exterior_shadow_fill",
-       "shader": true,
+       "shader": false,
       "collider": null,
       "scale": 1
     },
@@ -95,7 +101,7 @@
       "rotation": [0, -120, 0],
       "collider": {"pos": [0,0.5,0],"size": [0.3,1.2,0.3]},
       "ambient": "npc_shadow_fill",
-      "shader": true
+      "shader": false
     },
     {
       "id": "npc",
@@ -103,7 +109,7 @@
       "position": [-2.8, 0, -4.2],
       "rotation": [0, -80, 0],
       "ambient": "npc_shadow_fill",
-      "shader": true
+      "shader": false
     },
     {
       "id": "npc",
@@ -112,7 +118,7 @@
       "rotation": [0, 18, 0],
       "collider": {"pos": [0,0.5,0],"size": [0.3,1.2,0.3]},
       "ambient": "npc_shadow_fill",
-      "shader": true
+      "shader": false
     },
     {
       "id": "npc",
@@ -120,7 +126,7 @@
       "position": [3.45, 0, -2.32],
       "rotation": [0, 18, 0],
       "ambient": "npc_shadow_fill",
-      "shader": true
+      "shader": false
     }
   ]
 }
