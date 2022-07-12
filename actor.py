@@ -18,7 +18,7 @@ class PitoActor(Entity):
         self.npc_model = self.profile["model"]
         self.npc_texture = "assets/textures/"+self.profile["texture"]+".png"
         self.gasmask = self.profile["gasmask"]
-        self.npc_weapon = self.profile["weapon"]
+        # self.npc_weapon =
         self.weapon_hold = self.profile["weapon_hold"]
         self.idle_anim = self.profile["idle_animation"]
 
@@ -41,11 +41,11 @@ class PitoActor(Entity):
         self.antigas_type = self.profile["gasmask_type"] # antigas, elite
 
         self.weapon_scale = 2.5
-        self.weapon_model = "assets/models/"+self.npc_weapon
+        self.weapon_model = "assets/models/"+self.profile["weapon"]
         self.weapon_tex = "assets/textures/texobj2.png" if "w_tex" not in self.profile else self.profile["w_tex"]
 
         self.weapon = Entity(position=0, rotation=0, scale=self.weapon_scale,
-                             model=self.weapon_model, texture=self.weapon_tex)
+                             model=None, texture=self.weapon_tex)
         self.antigas_model = Entity(position=0, rotation=0, scale=2.5,
                              model=None, texture="assets/textures/antigas.png")
 
@@ -68,19 +68,19 @@ class PitoActor(Entity):
             self.antigas_model.texture = texture
 
         if self.weapon_place == "backpack":
-            changeWeapon("assets/models/" + self.npc_weapon, self.weapon_tex)
+            changeWeapon("/assets/models/" + self.profile["weapon"], self.weapon_tex)
             stickToBone(self.backpack,(0.4,-0.5, 0.5),(0, 0, 15))
 
         if self.weapon_place == "l_hand":
-            changeWeapon("assets/models/" + self.npc_weapon, self.weapon_tex)
+            changeWeapon("/assets/models/" + self.profile["weapon"], self.weapon_tex)
             stickToBone(self.l_hand,(-0.05, 0.15, 0.9),(-15, -5, 15))
 
         if self.weapon_place == "r_hand":
-            changeWeapon("assets/models/"+self.npc_weapon,self.weapon_tex)
+            changeWeapon("/assets/models/"+self.profile["weapon"],self.weapon_tex)
             stickToBone(self.r_hand,(-0.05, 0.15, 0.9),(-15, -5, 15))
 
         if self.antigas:
-            changeAntigas("assets/models/antigas","assets/textures/"+self.antigas_type+".png")
+            changeAntigas("/assets/models/antigas","assets/textures/"+self.antigas_type+".png")
             setAntigas(self.head,(0, 0.3, 0),(-90, 180, 0))
 
         self.actor.reparentTo(self)
@@ -105,6 +105,7 @@ class PitoActor(Entity):
 class PitoHostile(Entity):
     def __init__(self,profile_id,state, **kwargs):
         super().__init__()
+        self.profile_text_id = profile_id
         self.id = ""
         self.keys = {}
         #stalker, bandit, soldier, mercenary
@@ -128,7 +129,7 @@ class PitoHostile(Entity):
             "attack_from_right": ["shoot_right", "hide_right"],
             "attack_from_down": ["shoot_up", "hide_down"],
             "attack_forward": "shoot_forward",
-            "ignore": "idle"
+            "ignore": "idle_weapon"
         }
 
         self.npc_model = "assets/models/"+self.profile["model"]
@@ -151,11 +152,11 @@ class PitoHostile(Entity):
         self.weapon_place = "r_hand"
 
         self.weapon_scale = 2.5
-        self.weapon_model = "assets/models/" + random.choice(self.profile["weapons"])
+        self.weapon_model = "/assets/models/" + random.choice(self.profile["weapons"])
         self.weapon_tex = "assets/textures/texobj2.png" if "w_tex" not in self.profile else self.profile["w_tex"]
 
         self.weapon = Entity(position=0, rotation=0, scale=self.weapon_scale,
-                             model=self.weapon_model, texture=self.weapon_tex)
+                             model=None, texture=self.weapon_tex)
         self.hitbox = EnemyHitBox(id="enemy",root=self,model="cube",color=color.rgba(255,0,0,128) if game.setting.developer_mode else color.clear,
                                   parent=self.backpack,
                              scale=(1,1,2),position=(0,0,1),collider="mesh")
