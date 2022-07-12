@@ -71,29 +71,31 @@ class Inventory(Entity):
         self.click_sound = Audio("assets/sounds/click", autoplay=False, loop=False)
         self.stack_items = True
         self.items_offset = 0
+        self.w_left = window.left
+        self.w_top = window.top
         self.belt_slots = {
             0:{
                 "item": None,
                 "has_item": False,
-                "icon_position": (-0.537,-0.06,-0.005),
+                "icon_position": (self.w_left.x+0.265,-0.06,-0.005),
                 "icon": None
             },
             1:{
                 "item": None,
                 "has_item": False,
-                "icon_position": (-0.417, -0.06, -0.005),
+                "icon_position": (self.w_left.x+0.385, -0.06, -0.005),
                 "icon": None
              },
             2:{
                 "item": None,
                 "has_item": False,
-                "icon_position": (-0.295, -0.06, -0.005),
+                "icon_position": (self.w_left.x+0.505, -0.06, -0.005),
                 "icon": None
              },
             3:{
                 "item": None,
                 "has_item": False,
-                "icon_position": (-0.177, -0.06, -0.005),
+                "icon_position": (self.w_left.x+0.625, -0.06, -0.005),
                 "icon": None
              }
         }
@@ -109,7 +111,7 @@ class Inventory(Entity):
         self.pistol_slot_has_item = False
         self.pistol_slot_item = None
 
-        Entity(model="quad", parent=self, position=(0, 0, -0.001), scale=window.size, color=rgb(10, 10, 10))
+        Entity(model="quad", parent=self, position=(0, 0, -0.001), scale=window.size, color=rgb(2, 2, 0))
         self.frame = Sprite(ui_folder + "inventory_frame.png", position=(0, 0, -0.002), parent=self, scale=.208)
         self.items_container = Entity(model="quad", parent=self, position=(0, 0, -0.003), scale_x=2,
                                       color=color.rgba(255,255,255,0))
@@ -205,20 +207,22 @@ class Inventory(Entity):
                             break
 
     def move_to_slot(self, item, slot_id):
+        left = window.left
+        top = window.top
         if slot_id:
             if slot_id == "rifle":
                 destroy(self.rifle_slot)
-                self.rifle_slot = Sprite(item.item_data["icon"], parent=self, scale=0.5, x=-0.37, y=0.34, z=-0.005)
+                self.rifle_slot = Sprite(item.item_data["icon"], parent=self, scale=0.5, x=left.x+0.43, y=0.34, z=-0.005)
                 self.rifle_slot_item = item
                 self.rifle_slot_has_item = True
             if slot_id == "pistol":
                 destroy(self.pistol_slot)
-                self.pistol_slot = Sprite(item.item_data["icon"], parent=self, scale=0.5, x=-0.445, y=0.15, z=-0.005)
+                self.pistol_slot = Sprite(item.item_data["icon"], parent=self, scale=0.5, x=left.x+0.36, y=0.15, z=-0.005)
                 self.pistol_slot_item = item
                 self.pistol_slot_has_item = True
             if slot_id == "outfit":
                 destroy(self.outfit_slot)
-                self.outfit_slot = Sprite(item.item_data["icon"], parent=self, scale=0.5, x=-0.267, y=0.145, z=-0.005)
+                self.outfit_slot = Sprite(item.item_data["icon"], parent=self, scale=0.5, x=left.x+0.533, y=0.145, z=-0.005)
                 self.outfit_slot_item = item
                 self.outfit_slot_has_item = True
             if slot_id == "belt":
@@ -718,7 +722,7 @@ class Inventory(Entity):
                     self.selector.x = self.items_in_inventory[self.selector_id].x
                     self.selector.scale_x = self.items_in_inventory[self.selector_id].scale_x
 
-                    if self.selector.x == self.items_in_inventory[len(self.items_in_inventory)-1].x:
+                    if self.selector.x == self.items_in_inventory[len(self.items_in_inventory)-1].x and self.selector_id != 0:
                         self.items_offset = self.items_in_inventory[len(self.items_in_inventory)-1].x-0.31
                         self.update_items_2()
                         self.update_cursor()
@@ -744,11 +748,11 @@ class Inventory(Entity):
 
             # >> Выходим в меню
             if key == "escape" and self.enabled:
+                invoke(self.root_window.enable,delay=0.0001)
                 game.get_player().weapon.update_ammo_rifle()
                 self.selector_id = 0
                 self.update_cursor()
                 self.disable()
-                self.root_window.enable()
 
 
 if __name__ == "__main__":

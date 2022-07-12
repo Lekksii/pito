@@ -57,13 +57,13 @@ def npc_death(obj = None):
 # Callback if enemy was hit by player
 # (arg: obj - PitoHostile class object, that contains all enemy data)
 def npc_on_hit(obj = None):
-    print("{0} was wounded by {1}!".format(obj.keys["profile"],game.get_player().name))
+    print("{0} was wounded by {1}!".format(obj.profile_text_id,game.get_player().name))
 
 # Callback if player was hit by enemy
 # (arg: player - Player class object, that contains all player data)
 # (arg: obj - PitoHostile class object, that contains all enemy data)
 def player_on_hit(player = None, obj = None):
-    print("{0} was hit by {1}".format(player.name,obj.keys["profile"]))
+    print("{0} was hit by {1}".format(player.name,obj.profile_text_id))
 
 # Callback if level loaded
 def on_level_loaded():

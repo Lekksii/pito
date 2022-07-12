@@ -34,7 +34,7 @@ class PDA(Entity):
     def __init__(self, **kwargs):
         super().__init__(parent=camera.ui,z=-0.13)
         self.root_window = None
-        self.bg = Entity(parent=self,model="quad",scale=window.size,color=rgb(10,10,10))
+        self.bg = Entity(parent=self,model="quad",scale=window.size,color=rgb(2,2,0))
         self.frame = Sprite (ui_folder + "16_9_frame.png", parent=self, scale=0.222,z=-2)
         self.frame_1 = Sprite (ui_folder + "wnd_2_1.png", parent=self, scale=0.17,z=-2)
         self.coordinator = False
@@ -176,7 +176,7 @@ class PDA(Entity):
                             # загружаем новый по айди из ключа "уровень"
                             game.set_current_level(self.markers[self.selector_id].level_id)
                             self.crosshair_tip_text = ""
-                            invoke(callbacks.on_level_loaded, delay=0.001)
+                            invoke(callbacks.on_level_loaded, delay=3)
                             # убрать чёрный экран
                             invoke(setattr, camera.overlay, 'color', color.clear, delay=3)
                             # удалить текст загрузки
@@ -186,6 +186,9 @@ class PDA(Entity):
                             self.root_window.disable()
                             self.disable()
                             game.pause = False
+                        else:
+                            self.root_window.enable()
+                            self.disable()
 
 if __name__ == "__main__":
     game = Ursina()
