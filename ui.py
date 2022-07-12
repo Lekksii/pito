@@ -40,9 +40,9 @@ class UIText(Text):
         self.shadow = True
 
         if self.shadow:
-            self.shadow_text = Text(text,parent=self,origin=self.origin,x=self.x+offset[0],
+            self.shadow_text = Text(text=dedent(text).strip(),parent=self,origin=self.origin,x=self.x+offset[0],
                                 y=self.y-offset[1],color=rgb(10,10,10) if game.show_hud else self.hideHUD(),z=self.z+0.001)
-        self.origin_text = Text (text, parent=self, origin=self.origin,color = color,x=self.x,
+        self.origin_text = Text (text=dedent(text).strip(), parent=self, origin=self.origin,color = color,x=self.x,
                                 y=self.y,z=self.z)
 
         for key, value in kwargs.items ():
@@ -51,7 +51,7 @@ class UIText(Text):
     def setText(self,text):
         if self.shadow:
             self.shadow_text.text = text
-        self.origin_text.text = text
+        self.origin_text.text = dedent(text).strip()
 
 # WAYPOINT CREATOR
 class WaypointWindow(Entity):
@@ -59,7 +59,7 @@ class WaypointWindow(Entity):
         super().__init__(parent=camera.ui, z=-999)
 
         self.ignored_input_entity = None
-        self.root = Entity(parent=self, model=Quad(radius=.03), color=color.rgba(10, 10, 10, 255), scale=(.4,.3),
+        self.root = Entity(parent=self, model=Quad(radius=.03), color=color.rgba(2, 2, 0, 255), scale=(.4,.3),
                position=(0, 0))
         self.root.parent = self
         self.add_point = Button("Add",position=(0.25,-0.3),scale=(0.2,0.1),parent=self.root)
@@ -112,7 +112,7 @@ class MessageBox(Entity):
     def __init__(self, title, message,type = "info", **kwargs):
         super().__init__(parent=camera.ui,z=-999)
         self.ignored_input_entity = None
-        Entity(parent=self, model="quad", color=color.rgba(10,10,10,200), scale = (1*window.aspect_ratio,1),position=(0,0))
+        Entity(parent=self, model="quad", color=color.rgba(2,2,0,200), scale = (1*window.aspect_ratio,1),position=(0,0))
         Sprite (ui_folder+"message_box.png",parent=self,scale=0.25, position=(0, 0))
         self.title = UIText(title,shadow=True, parent=self,color=color_orange,origin=(-.5,0),position=(-.32,0.168))
         self.close = Button("OK",position=(0,-0.15),scale=(0.1,0.04),parent=self)
@@ -148,8 +148,7 @@ class MessageBox(Entity):
 class GameOverScreen(Entity):
     def __init__(self,**kwargs):
         super().__init__(parent=camera.ui,z=-999,ignore_paused=True)
-        Entity(parent=self, model="quad", color=color.rgba(10, 10, 10, 255), scale=window.size,
-               position=(0, 0))
+        Entity(parent=self, model="quad", color=color.rgba(2, 2, 0, 255), scale=window.size, position=(0, 0))
         Text(TKey("gameover"),parent=self,origin=(0,0))
 
         for key, value in kwargs.items ():
@@ -166,7 +165,15 @@ class GameOverScreen(Entity):
                 invoke(setattr, camera.overlay, 'color', color.clear, delay=1)
                 application.paused = False
 
-if __name__ == "__main__":
-    app = Ursina()
+# CUSTOM FULLSCREEN MENU
+class UIWindow(Entity):
+    def __init__(self, **kwargs):
+        super().__init__(parent=camera.ui,z=-999,ignore_paused=True)
+        Entity(parent=self, model="quad", color=color.rgb(2,2,0), scale=window.size,position=(0,0))
 
-    app.run()
+        for key, value in kwargs.items ():
+            setattr (self, key, value)
+
+    def input(self, key):
+        if key == "escape" or "enter":
+            self.disable()

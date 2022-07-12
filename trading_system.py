@@ -34,7 +34,7 @@ class TradeWindow(Entity):
         self.items_offset_p = 0
         self.items_offset_t = 0
 
-        Entity(parent=self, model="quad", color=rgb(10, 10, 10), scale=window.size)
+        Entity(parent=self, model="quad", color=rgb(2, 2, 0), scale=window.size)
         self.frame = Sprite(ui_folder + "trading_frame.png", parent=self, scale=.208, z=-0.0001)
         self.title = Text(TKey("pause.trading").upper(), parent=self, y=0.495, x=-0.57, z=-0.001,
                               color=color_orange,origi=(0,0))

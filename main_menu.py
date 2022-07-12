@@ -8,6 +8,7 @@ import os.path
 from language_system import TKey
 from language_system import language
 import ui
+import story
 
 scene = None
 # Картинка в главное меню
@@ -46,7 +47,7 @@ class MainMenu(Entity):
         scene = self
         # Главное меню
         self.main_menu = Entity(parent=self, enabled=True)
-        Entity(parent=self.main_menu, model="quad", color=rgb(10, 10, 10), scale=2)
+        Entity(parent=self.main_menu, model="quad", color=rgb(2, 2, 0), scale=2)
         # Главное Меню
         Sprite(parent=self.main_menu, texture=mm_image, y=0.1, scale=0.5)
         self.menu_punkt = Text(parent=self.main_menu, text="← {0} →".format(menu_buttons_list[menu_buttons_counter]),
@@ -68,6 +69,15 @@ class MainMenu(Entity):
         invoke(screen, delay=1)
         destroy(self)
         invoke(setattr, camera.overlay, 'color', color.clear, delay=1)
+
+    def StartNewGame(self,level=None):
+        camera.overlay.color = color.black
+        loading = Text(TKey("loading"), origin=(0, 0), color=color_orange, always_on_top=True)
+        destroy(loading, delay=2)
+        invoke(gm.Gameplay,level=level, delay=1)
+        destroy(self)
+        invoke(setattr, camera.overlay, 'color', color.clear, delay=2)
+        #invoke(story.show_intro_text,delay=2)
 
     def input(self, key):
         global menu_buttons_counter
@@ -95,7 +105,7 @@ class MainMenu(Entity):
             if key == "enter":
                 # Новая игра
                 if menu_buttons_counter == 0:
-                    self.ChangeScreen(gm.Gameplay)
+                    self.StartNewGame("intro")
                 # Опции
                 if menu_buttons_counter == 1:
                     self.main_menu.enabled = False
@@ -124,7 +134,7 @@ class Options(Entity):
         self.autodotect_size = self.options["autodetect"]
         self.option_selector = 0
         self.option_punkts_list = []
-        Entity(parent=self.options_menu, model="quad", color=rgb(10, 10, 10), scale=2)
+        Entity(parent=self.options_menu, model="quad", color=rgb(2, 2, 0), scale=2)
         self.frame = Sprite(ui_folder + "16_9_frame.png", parent=self.options_menu, scale=0.222)
         Text(parent=self.options_menu, text=TKey("mm.opt"), y=window.top.y - 0.1, origin=(0.05, 0),
              color=color_orange)
@@ -228,7 +238,7 @@ class About(Entity):
 
         # Об игре
         self.about_menu = Entity(parent=camera.ui, enabled=False)
-        Entity(parent=self.about_menu, model="quad", color=rgb(10, 10, 10), scale=2)
+        Entity(parent=self.about_menu, model="quad", color=rgb(2, 2, 0), scale=2)
         self.frame = Sprite(ui_folder + "16_9_frame.png", parent=self.about_menu, scale=0.222)
         Text(parent=self.about_menu, text=TKey("mm.about"), y=window.top.y - 0.1, origin=(0.05, 0), color=color.clear)
         Text(parent=self.about_menu, text="ver. " + str(setting.version) + " " + setting.version_type,

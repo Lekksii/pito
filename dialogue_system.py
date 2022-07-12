@@ -58,7 +58,7 @@ class Dialogue(Entity):
         self.click_sound = Audio ("assets/sounds/click", autoplay=False, loop=False)
 
         # окно
-        Entity(parent=self,model="quad",color=rgb(10,10,10),scale=window.size)
+        Entity(parent=self,model="quad",color=rgb(2,2,0),scale=window.size)
 
         # рамка
         self.frame = Sprite (ui_folder + "16_9_frame.png", parent=self, scale=0.222, z=-2)
@@ -77,7 +77,7 @@ class Dialogue(Entity):
         Text (TKey("dialogue.player.answers").upper (), parent=self, y=-0.17, x=0.61,z=-1, color=color_orange)
 
         self.answers_container = Entity(model="quad", parent=self, y=-0.3,z=-2, scale=(2,1),
-                                      color=color.rgba(10,10,10,0))
+                                      color=color.rgba(2,2,0,0))
         self.answers_container.set_scissor(Vec3(-0.38, 0.09, -1), Vec3(0.38, -0.12, 1))
 
         self.arrow_up = Sprite (ui_folder + "big_arrow_up.png", x=0.75, y=-0.22, parent=self, scale=0.222, z=-2)

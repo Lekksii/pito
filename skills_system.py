@@ -18,7 +18,7 @@ class SkillsWindow(Entity):
         super().__init__(z=-0.112)
         self.root_window = None
         self.parent = camera.ui
-        self.skills_root = Entity(parent=self, model="quad", color=rgb(10, 10, 10), scale=window.size)
+        self.skills_root = Entity(parent=self, model="quad", color=rgb(2, 2, 0), scale=window.size)
         self.frame = Sprite(ui_folder + "16_9_frame.png", parent=self, scale=0.222)
         Text(TKey("pause.skills").upper(), parent=self, y=0.4, origin=(0, 0))
 

@@ -1,7 +1,7 @@
 from ursina import *
 import setting
 import main_menu
-from tkinter import Tk
+from tkinter import tix
 from game import Player
 from game import Gameplay
 from game import Level
@@ -10,8 +10,9 @@ from language_system import language
 import my_json
 import os.path
 import bug_trap
+from editor import Editor
 
-root = Tk()
+root = tix.Tk()
 
 options = None
 actor_texture = None
@@ -77,8 +78,13 @@ if __name__ == "__main__":
     # НАЧИНАЕМ ИГРУ С ГЛАВНОГО МЕНЮ
     #scene = main_menu.MainMenu()
 
+    # НАЧИНАЕМ ИГРУ С ИГРОВОГО ПРОЦЕССА
     scene = Gameplay()
 
+    # ЗАПУСКАЕМ РЕДАКТОР УРОВНЕЙ
     #scene = LevelEditor("garbage_camp")
+
+    # ЗАПУСКАЕМ РЕДАКТОР КОНФИГУРАЦИИ
+    #scene = Editor()
 
     app.run()

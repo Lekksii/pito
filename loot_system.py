@@ -33,7 +33,7 @@ class LootWindow(Entity):
         self.selector_id = 0
         self.items_offset = 0
 
-        Entity(parent=self, model="quad", color=rgb(10, 10, 10), scale=window.size)
+        Entity(parent=self, model="quad", color=rgb(2, 2, 0), scale=window.size)
         self.frame = Sprite(ui_folder + "loot_frame.png", parent=self, scale=.208,z=-0.0001)
         self.loot_name = Text("Loot".upper(), parent=self, y=0.495, x=-0.55,z=-0.001, color=color_orange)
         # Entity (parent=self, y=0.37, x=0, model="quad", scale_y=0.002, color=color.dark_gray, scale_x=window.size.x)

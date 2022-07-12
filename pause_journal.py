@@ -51,7 +51,7 @@ class JournalWindow(Entity):
         self.click_sound = Audio ("assets/sounds/click", autoplay=False, loop=False)
 
         self.parent = camera.ui
-        self.journal = Entity (parent=self, model="quad", color=rgb (10, 10, 10), scale=window.size)
+        self.journal = Entity (parent=self, model="quad", color=rgb (2, 2, 0), scale=window.size)
 
         self.frame = Sprite (ui_folder + "16_9_frame.png", parent=self, scale=0.222)
         Text (TKey("pause.journal.title").upper (), parent=self, y=0.4, origin=(0, 0))

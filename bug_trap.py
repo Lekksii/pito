@@ -1,14 +1,11 @@
 from ursina import *
 import ctypes
 import datetime
-import tkinter.messagebox
+from tkinter import messagebox
 
 # Сообщение с причиной краша игры
 def crash_game_msg(title, text, style = 1):
-    if (os.name == "posix"):
-        return tkinter.messagebox.showerror(title,text)
-    else:
-        return ctypes.windll.user32.MessageBoxW(0, text, title, style)
+     return messagebox.showerror(title,text)
 
 # Проверка файлов на существование, если их нет - крашим игру!
 def check_file(fname):

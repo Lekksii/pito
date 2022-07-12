@@ -1,4 +1,6 @@
 from ursina import *
+from panda3d.core import PerspectiveLens
+from panda3d.core import TextureStage
 from panda3d.core import DirectionalLight as PandaDirectionalLight
 from panda3d.core import PointLight as PandaPointLight
 from panda3d.core import AmbientLight as PandaAmbientLight
@@ -56,11 +58,13 @@ class PitoDirectionalLight(Light):
 class PitoPointLight(Light):
     def __init__(self,distance=1,colour=(1,1,1,1), **kwargs):
         super().__init__()
+        self.keys = None
         self._light = PandaPointLight('point_light')
         self._light.attenuation = (1, 0, 2)
         self._light.max_distance = distance
         self._light.setColor(colour)
         self._pl = self.attachNewNode(self._light)
+        #self._light.setShadowCaster(True, 128, 128)
         render.setLight(self._pl)
 
         for key, value in kwargs.items():
@@ -70,6 +74,7 @@ class PitoPointLight(Light):
 class PitoAmbientLight(Light):
     def __init__(self,colour=(1,1,1,1), **kwargs):
         super().__init__()
+        self.keys = None
         self._light = PandaAmbientLight('ambient_light')
         self._al = render.setLight(self.attachNewNode(self._light))
         self._al.node().setColor(colour)
@@ -82,9 +87,12 @@ class PitoAmbientLight(Light):
 
 class PitoSpotLight(Light):
     def __init__(self, **kwargs):
-        super().__init__()
+        super().__init__(distance=0.01, color=color.red, exponent=50)
+        self.keys = None
         self._light = PandaSpotLight('spot_light')
+        self._light.setShadowCaster(True, 128, 128)
         render.setLight(self.attachNewNode(self._light))
+        #render.setShaderAuto()
 
         for key, value in kwargs.items():
             setattr(self, key ,value)
